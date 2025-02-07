@@ -4,11 +4,15 @@
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, World!");
-
             // read in file
+
+            string filename = "data.txt";
+            string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, filename);
+
+            foreach (string line in File.ReadLines(filePath))
             {
                 // parse all numbers in line into a list
+                Console.WriteLine(line);
 
                 // iterate through list
                 {
