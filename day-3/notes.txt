@@ -1,0 +1,7 @@
+ignore anything that is not exactly formatted like this: mul(2,5)
+
+Invalid examples:
+mul ( 2 , 4 )
+mul(4*
+mul(6,9!
+?(12,34)
