@@ -12,13 +12,13 @@ namespace aoc_2024_day_4
 
             string[] lines = text.Split('\n');
 
-            char[,] matrix = new char[lines[0].Length, lines.Length];
+            char[,] matrix = new char[lines[0].Trim().Length, lines.Length];
 
-            for (int x = 0; x < lines.Length - 1; ++x)
+            for (int y = 0; y < matrix.GetLength(0); ++y)
             {
-                for (int y = 0; y < lines[0].Length - 1; ++y)
+                for (int x = 0; x < matrix.GetLength(1); ++x)
                 {
-                    matrix[x, y] = lines[x][y];
+                    matrix[x, y] = lines[y][x];
                 }
             }
 
@@ -26,9 +26,9 @@ namespace aoc_2024_day_4
             string textToFind = "XMAS";
 
             // iterate through every character in data
-            for (int x = 0; x < matrix.GetLength(0); ++x)
+            for (int y = 0; y < matrix.GetLength(0); ++y)
             {
-                for (int y = 0; y < matrix.GetLength(1); ++y)
+                for (int x = 0; x < matrix.GetLength(1); ++x)
                 {
                     char c = matrix[x, y];
 
@@ -38,8 +38,8 @@ namespace aoc_2024_day_4
                     if (c != 'X') continue;
 
                     total += FindRight(matrix, x, y, textToFind);
-
-                    // left
+                   
+                    total += FindLeft(matrix, x, y, textToFind);
 
                     // up
 
@@ -54,7 +54,7 @@ namespace aoc_2024_day_4
                     // diag down left
 
                 }
-                
+
                 Console.WriteLine();
             }
 
@@ -62,13 +62,25 @@ namespace aoc_2024_day_4
             Console.WriteLine(total);
         }
 
-        private static int FindRight(char[,] matrix,  int x, int y, string textToFind)
+        private static int FindRight(char[,] matrix, int x, int y, string textToFind)
         {
             string foundText = "X";
 
-            for (int i = 1; i < matrix.GetLength(0) && i < textToFind.Length; ++i)
+            for (int i = 1; x + i < matrix.GetLength(0) && i < textToFind.Length; ++i)
             {
                 foundText += matrix[x + i, y];
+            }
+
+            return foundText.Equals(textToFind) ? 1 : 0;
+        }
+
+        private static int FindLeft(char[,] matrix, int x, int y, string textToFind)
+        {
+            string foundText = "X";
+
+            for (int i = 1; x - i >= 0 && i < textToFind.Length; ++i)
+            {
+                foundText += matrix[x - i, y];
             }
 
             return foundText.Equals(textToFind) ? 1 : 0;
