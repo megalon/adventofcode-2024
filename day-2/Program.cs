@@ -36,6 +36,19 @@
                         isSafe = false;
                         break;
                     }
+
+                    // Only compare if we have more than one distance
+                    if (i > 1)
+                    {
+                        if (prevDistance > 0 && distance < 0
+                            || prevDistance < 0 && distance > 0)
+                        {
+                            isSafe = false;
+                            break;
+                        }
+                    }
+
+                    prevDistance = distance;
                 }
 
                 // if report is safe
