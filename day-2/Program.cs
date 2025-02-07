@@ -24,14 +24,10 @@
                 int firstUnsafeLevel = -1;
                 firstUnsafeLevel = FindFirstUnsafeLevel(levelsList);
 
-                bool isSafe = firstUnsafeLevel == -1;
-
                 // if a level was found to be unsafe
-                if (!isSafe)
+                if (firstUnsafeLevel != -1)
                 {
-                    isSafe = IsSafeUsingProblemDampener(levelsList, firstUnsafeLevel);
-
-                    if (!isSafe) continue;
+                    if (!IsSafeUsingProblemDampener(levelsList)) continue;
                 }
 
                 ++totalSafeReports;
@@ -40,40 +36,18 @@
             Console.WriteLine(totalSafeReports);
         }
 
-        private static bool IsSafeUsingProblemDampener(List<int> levelsList, int firstUnsafeLevel)
+        private static bool IsSafeUsingProblemDampener(List<int> levelsList)
         {
-            List<int> modifiedLevelsList = new List<int>(levelsList);
-
-            // Try removing the unsafe level
-            modifiedLevelsList.RemoveAt(firstUnsafeLevel);
-
-            // check safety again
-            int unsafeLevel = -1;
-            unsafeLevel = FindFirstUnsafeLevel(modifiedLevelsList);
-
-            if (unsafeLevel == -1) return true;
-
-            // If still unsafe, reset and try removing another one
-            modifiedLevelsList = new List<int>(levelsList);
-
-            // Try removing the level after this one,
-            // and if we can't then try removing the level before this one
-            if (firstUnsafeLevel + 1 < levelsList.Count)
+            for (int i = 0; i < levelsList.Count; ++i)
             {
-                modifiedLevelsList.RemoveAt(firstUnsafeLevel + 1);
+                List<int> modifiedLevelsList = new List<int>(levelsList);
 
-                // check safety again
-                unsafeLevel = FindFirstUnsafeLevel(modifiedLevelsList);
-            }
-            else if (firstUnsafeLevel > 0) // Try removing the level before this one
-            {
-                modifiedLevelsList.RemoveAt(firstUnsafeLevel - 1);
+                modifiedLevelsList.RemoveAt(i);
 
-                // check safety again
-                unsafeLevel = FindFirstUnsafeLevel(modifiedLevelsList);
+                if (FindFirstUnsafeLevel(modifiedLevelsList) == -1) return true;
             }
 
-            return unsafeLevel == -1;
+            return false;
         }
 
         private static int FindFirstUnsafeLevel(List<int> levelsList)
@@ -104,10 +78,5 @@
 
             return -1;
         }
-
-        //private static int TestSafety(int level1, int level2)
-        //{
-
-        //}
     }
 }
