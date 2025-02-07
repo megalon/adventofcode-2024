@@ -1,0 +1,19 @@
+location ID
+
+two lists
+
+each one tried to be a complete list,
+so they are supposed to have the same data
+
+pair up numbers
+
+smallest number in left with smallest in right
+
+figure out the distnace between pairs
+
+plan:
+parse input into two lists
+sort both lists
+iterate through both lists and compare
+increment comparison number
+
