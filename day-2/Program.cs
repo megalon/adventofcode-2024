@@ -4,13 +4,12 @@
     {
         static void Main(string[] args)
         {
-            // read in file
-
             string filename = "data.txt";
             string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, filename);
 
             long totalSafeReports = 0;
 
+            // read in file
             foreach (string line in File.ReadLines(filePath))
             {
                 // parse all numbers in line into a list
@@ -24,7 +23,7 @@
                 int firstUnsafeLevel = -1;
                 firstUnsafeLevel = FindFirstUnsafeLevel(levelsList);
 
-                // if a level was found to be unsafe
+                // if a level was found to be unsafe, try using the problem dampener
                 if (firstUnsafeLevel != -1)
                 {
                     if (!IsSafeUsingProblemDampener(levelsList)) continue;
