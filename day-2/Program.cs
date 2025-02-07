@@ -13,11 +13,9 @@
 
             foreach (string line in File.ReadLines(filePath))
             {
-                //Console.WriteLine(line);
-
                 // parse all numbers in line into a list
                 List<int> levelsList = new List<int>();
-                
+           
                 foreach (string num in line.Split())
                 {
                     levelsList.Add(int.Parse(num));
@@ -26,7 +24,6 @@
                 bool isSafe = true;
                 int prevDistance = 0;
 
-                // iterate through list
                 for (int i = 1; i < levelsList.Count; ++i)
                 {
                     int distance = levelsList[i] - levelsList[i - 1];
@@ -51,15 +48,12 @@
                     prevDistance = distance;
                 }
 
-                // if report is safe
                 if (isSafe)
                 {
-                    // increment safe counter
                     ++totalSafeReports;
                 }
             }
 
-            // log result
             Console.WriteLine(totalSafeReports);
         }
     }
