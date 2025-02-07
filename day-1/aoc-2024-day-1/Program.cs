@@ -20,14 +20,11 @@
 
                 // parse 1st number and place into list a
                 a = trimmedLine.Substring(0, trimmedLine.IndexOf(" "));
-
                 listA.Add(int.Parse(a));
 
                 // parse 2nd number and place into list b
                 b = trimmedLine.Substring(trimmedLine.Trim().LastIndexOf(" ") + 1);
-
                 listB.Add(int.Parse(b));
-
 
                 //Console.WriteLine($"\"{a}\", \"{b}\"");
             }
@@ -41,7 +38,6 @@
             // iterate through list a
             for (int i = 0; i < listA.Count; ++i)
             {
-                // total += abs(a[i] - b[i])
                 total += Math.Abs(listA[i] - listB[i]);
             }
 
