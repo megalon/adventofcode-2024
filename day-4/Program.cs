@@ -42,14 +42,10 @@ namespace aoc_2024_day_4
                     total += FindDirectional(matrix, x, y, textToFind,  0,  1); // up
                     total += FindDirectional(matrix, x, y, textToFind,  0, -1); // down
 
-                    // diag up right
-
-                    // diag up left
-
-                    // diag down right
-
-                    // diag down left
-
+                    total += FindDirectional(matrix, x, y, textToFind,  1,  1); // diag up right
+                    total += FindDirectional(matrix, x, y, textToFind, -1,  1); // diag up left
+                    total += FindDirectional(matrix, x, y, textToFind,  1, -1); // diag down right
+                    total += FindDirectional(matrix, x, y, textToFind, -1, -1); // diag down left
                 }
 
                 Console.WriteLine();
