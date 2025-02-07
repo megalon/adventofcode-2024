@@ -38,12 +38,9 @@ namespace aoc_2024_day_4
                     if (c != 'X') continue;
 
                     total += FindRight(matrix, x, y, textToFind);
-                   
                     total += FindLeft(matrix, x, y, textToFind);
-
-                    // up
-
-                    // down
+                    total += FindUp(matrix, x, y, textToFind);
+                    total += FindDown(matrix, x, y, textToFind);
 
                     // diag up right
 
@@ -64,23 +61,37 @@ namespace aoc_2024_day_4
 
         private static int FindRight(char[,] matrix, int x, int y, string textToFind)
         {
-            string foundText = "X";
-
-            for (int i = 1; x + i < matrix.GetLength(0) && i < textToFind.Length; ++i)
-            {
-                foundText += matrix[x + i, y];
-            }
-
-            return foundText.Equals(textToFind) ? 1 : 0;
+            return FindDirectional(matrix, x, y, textToFind, 1, 0);
         }
 
         private static int FindLeft(char[,] matrix, int x, int y, string textToFind)
         {
+            return FindDirectional(matrix, x, y, textToFind, -1, 0);
+        }
+
+        private static int FindUp(char[,] matrix, int x, int y, string textToFind)
+        {
+            return FindDirectional(matrix, x, y, textToFind, 0, -1);
+        }
+
+        private static int FindDown(char[,] matrix, int x, int y, string textToFind)
+        {
+            return FindDirectional(matrix, x, y, textToFind, 0, 1);
+        }
+
+        private static int FindDirectional(char[,] matrix, int x, int y, string textToFind, int xDelta, int yDelta)
+        {
             string foundText = "X";
 
-            for (int i = 1; x - i >= 0 && i < textToFind.Length; ++i)
+            for (int i = 1;
+                i < textToFind.Length
+                && x + (i * xDelta) >= 0
+                && y + (i * yDelta) >= 0
+                && x + (i * xDelta) < matrix.GetLength(0)
+                && y + (i * yDelta) < matrix.GetLength(1);
+                ++i)
             {
-                foundText += matrix[x - i, y];
+                foundText += matrix[x + (i * xDelta), y + (i * yDelta)];
             }
 
             return foundText.Equals(textToFind) ? 1 : 0;
