@@ -37,10 +37,10 @@ namespace aoc_2024_day_4
                     // check if character is an X
                     if (c != 'X') continue;
 
-                    total += FindRight(matrix, x, y, textToFind);
-                    total += FindLeft(matrix, x, y, textToFind);
-                    total += FindUp(matrix, x, y, textToFind);
-                    total += FindDown(matrix, x, y, textToFind);
+                    total += FindDirectional(matrix, x, y, textToFind,  1,  0); // right
+                    total += FindDirectional(matrix, x, y, textToFind, -1,  0); // left
+                    total += FindDirectional(matrix, x, y, textToFind,  0,  1); // up
+                    total += FindDirectional(matrix, x, y, textToFind,  0, -1); // down
 
                     // diag up right
 
@@ -57,26 +57,6 @@ namespace aoc_2024_day_4
 
             // log total
             Console.WriteLine(total);
-        }
-
-        private static int FindRight(char[,] matrix, int x, int y, string textToFind)
-        {
-            return FindDirectional(matrix, x, y, textToFind, 1, 0);
-        }
-
-        private static int FindLeft(char[,] matrix, int x, int y, string textToFind)
-        {
-            return FindDirectional(matrix, x, y, textToFind, -1, 0);
-        }
-
-        private static int FindUp(char[,] matrix, int x, int y, string textToFind)
-        {
-            return FindDirectional(matrix, x, y, textToFind, 0, -1);
-        }
-
-        private static int FindDown(char[,] matrix, int x, int y, string textToFind)
-        {
-            return FindDirectional(matrix, x, y, textToFind, 0, 1);
         }
 
         private static int FindDirectional(char[,] matrix, int x, int y, string textToFind, int xDelta, int yDelta)
