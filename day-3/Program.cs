@@ -6,8 +6,6 @@ namespace aoc_2024_day_3
     {
         static void Main(string[] args)
         {
-            // read in data
-
             string filename = "data.txt";
             string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, filename);
 
@@ -32,7 +30,7 @@ namespace aoc_2024_day_3
                 // get 2nd number (b)
                 b = int.Parse(match.Value.Substring(indexOfComma + 1, match.Value.IndexOf(")") - indexOfComma - 1));
 
-                Console.WriteLine($"{a} * {b} = {a * b}");
+                //Console.WriteLine($"{a} * {b} = {a * b}");
 
                 total += a * b;
             }
