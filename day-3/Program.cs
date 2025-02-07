@@ -1,4 +1,6 @@
-﻿namespace aoc_2024_day_3
+﻿using System.Text.RegularExpressions;
+
+namespace aoc_2024_day_3
 {
     internal class Program
     {
@@ -11,13 +13,14 @@
 
             string data = File.ReadAllText(filePath);
 
-            Console.WriteLine(data);
-
             // get all the matches in a List using regex
             // regex something like "mul("[0-9]*","[0-9]*")"
+            string regex = @"mul\([0-9]*,[0-9]*\)";
 
             // iterate through list
+            foreach(Match match in Regex.Matches(data, regex))
             {
+                Console.WriteLine(match.Value);
                 // get 1st number (a)
 
                 // get 2nd number (b)
