@@ -41,8 +41,10 @@ namespace aoc_2024_day_3
         }
 
         /// <summary>
-        /// This uses a buffer to read through all of the input data and track the current "don't()" and "do()" pairs
-        /// When a pair is found, the characters before it are added to the processedData string, and the characters inside the pair is ignored
+        /// This uses a buffer to read through all of the input data
+        /// Ultimately this works but this is a bad solution compared to just using regex.
+        /// I didn't know about regex groups and didn't see how regex could be used to track the indexes of the pairs
+        /// I knew that I had to scan through the input data, and a buffer made the most sense
         /// </summary>
         private static string ProcessData(string data)
         {
@@ -52,7 +54,7 @@ namespace aoc_2024_day_3
             char[] buffer = new char[bufferSize];
             string bufferString = "";
             char c = ' ';
-            int processIndex = 0, dontIndex = 0;
+            bool enabled = true;
 
             for (int i = 0; i < data.Length; ++i)
             {
@@ -67,24 +69,19 @@ namespace aoc_2024_day_3
 
                 if (bufferString.Contains("don't()"))
                 {
-                    dontIndex = i;
+                    enabled = false;
                 }
-                else if (bufferString.Contains("do()"))
+                
+                if (bufferString.Contains("do()"))
                 {
-                    // substring from previous position to current "don't()" position
-                    processedData += data.Substring(processIndex, dontIndex - processIndex);
-
-                    // move process index to current read index to skip the chars between don't and do
-                    processIndex = i;
-                    dontIndex = i;
+                    enabled = true;
 
                     // clear the buffer so we don't trigger the condition again on the next iteration
                     buffer = new char[bufferSize];
                 }
-            }
 
-            // Special case for end of file
-            processedData += data.Substring(processIndex);
+                if (enabled) processedData += c;
+            }
 
             return processedData;
         }
