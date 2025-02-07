@@ -5,9 +5,14 @@
         static void Main(string[] args)
         {
             // open file
+            string dataFileName = "data.txt";
+
+            string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, dataFileName);
 
             // read each line
+            foreach (string line in File.ReadLines(filePath))
             {
+                Console.WriteLine(line);
                 // parse 1st number and place into list a
                 // parse 2nd number and place into list b
             }
