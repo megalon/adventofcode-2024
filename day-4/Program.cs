@@ -32,7 +32,7 @@ namespace aoc_2024_day_4
                 {
                     char c = matrix[x, y];
 
-                    Console.Write(c);
+                    //Console.Write(c);
 
                     // check if character is an X
                     if (c != 'X') continue;
@@ -48,10 +48,9 @@ namespace aoc_2024_day_4
                     total += FindDirectional(matrix, x, y, textToFind, -1, -1); // diag down left
                 }
 
-                Console.WriteLine();
+                //Console.WriteLine();
             }
 
-            // log total
             Console.WriteLine(total);
         }
 
