@@ -1,4 +1,4 @@
-﻿using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;
 
 namespace aoc_2024_day_4
 {
@@ -53,10 +53,10 @@ namespace aoc_2024_day_4
             matchCount += FindDirectional(matrix, x, y, textToFind, 0, 1); // up
             matchCount += FindDirectional(matrix, x, y, textToFind, 0, -1); // down
 
-            matchCount += FindDirectional(matrix, x, y, textToFind, 1, 1); // diag up right
-            matchCount += FindDirectional(matrix, x, y, textToFind, -1, 1); // diag up left
-            matchCount += FindDirectional(matrix, x, y, textToFind, 1, -1); // diag down right
-            matchCount += FindDirectional(matrix, x, y, textToFind, -1, -1); // diag down left
+            matchCount += FindDirectional(matrix, x, y, textToFind, 1, 1); // diag down right
+            matchCount += FindDirectional(matrix, x, y, textToFind, -1, 1); // diag down left
+            matchCount += FindDirectional(matrix, x, y, textToFind, 1, -1); // diag up right
+            matchCount += FindDirectional(matrix, x, y, textToFind, -1, -1); // diag up left
 
             return matchCount;
         }
