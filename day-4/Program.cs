@@ -22,7 +22,8 @@ namespace aoc_2024_day_4
                 }
             }
 
-            int total = 0;
+            int total1 = 0;
+            int total2 = 0;
 
             // iterate through every character in data
             for (int y = 0; y < matrix.GetLength(0); ++y)
@@ -32,20 +33,25 @@ namespace aoc_2024_day_4
                     char c = matrix[x, y];
 
                     //Console.Write(c);
+                    
+                    total1 += Part1(matrix, x, y);
 
-                    total += Part2(matrix, x, y);
+                    total2 += Part2(matrix, x, y);
                 }
 
                 //Console.WriteLine();
             }
 
-            Console.WriteLine(total);
+            Console.WriteLine($"Part 1: {total1}");
+            Console.WriteLine($"Part 2: {total2}");
         }
 
         private static int Part1(char[,] matrix, int x, int y)
         {
             string textToFind = "XMAS";
             int matchCount = 0;
+
+            if (matrix[x, y] != 'X') return 0;
 
             matchCount += FindDirectional(matrix, x, y, textToFind, 1, 0); // right
             matchCount += FindDirectional(matrix, x, y, textToFind, -1, 0); // left
@@ -67,24 +73,9 @@ namespace aoc_2024_day_4
 
             if (matrix[x, y] != 'A') return 0;
 
-            // M..
-            // .A.
-            // ..S
             matchCount += FindDirectional(matrix, x - 1, y - 1, textToFind, 1, 1); // diag down right
-
-            // ..M
-            // .A.
-            // S..
             matchCount += FindDirectional(matrix, x + 1, y - 1, textToFind, -1, 1); // diag down left
-
-            // S..
-            // .A.
-            // ..M
             matchCount += FindDirectional(matrix, x - 1, y + 1, textToFind, 1, -1); // diag up right
-
-            // ..S
-            // .A.
-            // M..
             matchCount += FindDirectional(matrix, x + 1, y + 1, textToFind, -1, -1); // diag up left
             
             // Need two matches to make an X
