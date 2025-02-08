@@ -21,13 +21,12 @@ namespace aoc_2024_day_5
                 int page2 = int.Parse(match.Groups[2].Value);
 
                 if (rulesDict.ContainsKey(page1))
-                {
                     rulesDict[page1].Add(page2);
-                } else
-                {
+                else
                     rulesDict.Add(page1, new List<int> { page2 });
-                }
             }
+
+            long total = 0;
 
             // Collect all lists of pages
             foreach (Match match in Regex.Matches(text, @"([0-9]+,)+[0-9]+([\r\n]+|$)"))
@@ -65,12 +64,11 @@ namespace aoc_2024_day_5
 
                 if (!valid) continue;
 
-                // find middle value
-
                 // add middle value to total
+                total += pagesArray[(int)Math.Ceiling(pagesArray.Length / 2.0) - 1];
             }
 
-            // log total
+            Console.WriteLine(total);
         }
     }
 }
