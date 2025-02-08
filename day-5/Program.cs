@@ -6,8 +6,13 @@
         {
             // Read input
 
-            // Collect all page number rules "X|Y"
+            string filepath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data.txt");
 
+            string text = File.ReadAllText(filepath);
+
+            Console.WriteLine(text);
+
+            // Collect all page number rules "X|Y"
             // Build dictionary using these rules
             {
 
