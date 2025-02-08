@@ -6,10 +6,7 @@ namespace aoc_2024_day_5
     {
         static void Main(string[] args)
         {
-            // Read input
-
             string filepath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data.txt");
-
             string text = File.ReadAllText(filepath);
 
             Dictionary<int, List<int>> rulesDict = new Dictionary<int, List<int>>();
@@ -36,16 +33,11 @@ namespace aoc_2024_day_5
             foreach (Match match in Regex.Matches(text, @"([0-9]+,)+[0-9]+([\r\n]+|$)"))
             {
                 // Convert strings to array of ints
-                string[] pagesStringArray = match.Value.Trim().Split(',');
-                int[] pagesArray = new int[pagesStringArray.Length];
-                for (int i = 0; i < pagesStringArray.Length; ++i)
-                {
-                    pagesArray[i] = int.Parse(pagesStringArray[i]);
-                }
+                int[] pagesArray = match.Value.Split(',').Select(int.Parse).ToArray();
 
                 bool valid = true;
 
-                // Iterate 
+                // Iterate backwards because we want to test elements preceding the current element
                 for (int i = pagesArray.Length - 1; i >= 0; --i)
                 {
                     int page = pagesArray[i];
@@ -54,7 +46,7 @@ namespace aoc_2024_day_5
                     for (int j = i - 1; j >= 0; --j)
                     {
                         // If the rules dictionary for this page
-                        // contains a rule one of the elements before this in the list
+                        // has one of the elements before this in the list
                         // then this page is in the wrong order
                         if (rulesDict.TryGetValue(page, out List<int> list))
                         {
