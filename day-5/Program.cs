@@ -4,7 +4,42 @@
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, World!");
+            // Read input
+
+            // Collect all page number rules "X|Y"
+
+            // Build dictionary using these rules
+            {
+
+            }
+
+            // Collect all lists of pages
+
+            // Convert strings to list of ints
+            {
+
+            }
+
+            // Iterate through lists
+            {
+                // valid = true
+
+                // Iterate through each element in list
+                {
+                    // Check element against all other elements
+                    // Using rules from rule dict
+
+                    // If failure, valid = false, break
+                }
+
+                // if !valid: continue
+
+                // find middle value
+
+                // add middle value to total
+            }
+
+            // log total
         }
     }
 }
