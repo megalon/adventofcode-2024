@@ -1,4 +1,6 @@
-﻿namespace aoc_2024_day_5
+﻿using System.Text.RegularExpressions;
+
+namespace aoc_2024_day_5
 {
     internal class Program
     {
@@ -10,12 +12,24 @@
 
             string text = File.ReadAllText(filepath);
 
-            Console.WriteLine(text);
+            Dictionary<int, List<int>> rulesDict = new Dictionary<int, List<int>>();
 
             // Collect all page number rules "X|Y"
             // Build dictionary using these rules
+            foreach (Match match in Regex.Matches(text, @"([0-9]+)\|([0-9]+)"))
             {
+                Console.WriteLine(match.Groups[1].Value + " " + match.Groups[2].Value);
 
+                int page1 = int.Parse(match.Groups[1].Value);
+                int page2 = int.Parse(match.Groups[2].Value);
+
+                if (rulesDict.ContainsKey(page1))
+                {
+                    rulesDict[page1].Add(page2);
+                } else
+                {
+                    rulesDict.Add(page1, new List<int> { page2 });
+                }
             }
 
             // Collect all lists of pages
