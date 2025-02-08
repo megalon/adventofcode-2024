@@ -23,7 +23,6 @@ namespace aoc_2024_day_4
             }
 
             int total = 0;
-            string textToFind = "XMAS";
 
             // iterate through every character in data
             for (int y = 0; y < matrix.GetLength(0); ++y)
@@ -34,18 +33,7 @@ namespace aoc_2024_day_4
 
                     //Console.Write(c);
 
-                    // check if character is an X
-                    if (c != 'X') continue;
-
-                    total += FindDirectional(matrix, x, y, textToFind,  1,  0); // right
-                    total += FindDirectional(matrix, x, y, textToFind, -1,  0); // left
-                    total += FindDirectional(matrix, x, y, textToFind,  0,  1); // up
-                    total += FindDirectional(matrix, x, y, textToFind,  0, -1); // down
-
-                    total += FindDirectional(matrix, x, y, textToFind,  1,  1); // diag up right
-                    total += FindDirectional(matrix, x, y, textToFind, -1,  1); // diag up left
-                    total += FindDirectional(matrix, x, y, textToFind,  1, -1); // diag down right
-                    total += FindDirectional(matrix, x, y, textToFind, -1, -1); // diag down left
+                    total += Part1(matrix, x, y);
                 }
 
                 //Console.WriteLine();
@@ -54,11 +42,30 @@ namespace aoc_2024_day_4
             Console.WriteLine(total);
         }
 
+
+        private static int Part1(char[,] matrix, int x, int y)
+        {
+            string textToFind = "XMAS";
+            int matchCount = 0;
+
+            matchCount += FindDirectional(matrix, x, y, textToFind, 1, 0); // right
+            matchCount += FindDirectional(matrix, x, y, textToFind, -1, 0); // left
+            matchCount += FindDirectional(matrix, x, y, textToFind, 0, 1); // up
+            matchCount += FindDirectional(matrix, x, y, textToFind, 0, -1); // down
+
+            matchCount += FindDirectional(matrix, x, y, textToFind, 1, 1); // diag up right
+            matchCount += FindDirectional(matrix, x, y, textToFind, -1, 1); // diag up left
+            matchCount += FindDirectional(matrix, x, y, textToFind, 1, -1); // diag down right
+            matchCount += FindDirectional(matrix, x, y, textToFind, -1, -1); // diag down left
+
+            return matchCount;
+        }
+
         private static int FindDirectional(char[,] matrix, int x, int y, string textToFind, int xDelta, int yDelta)
         {
-            string foundText = "X";
+            string foundText = "";
 
-            for (int i = 1;
+            for (int i = 0;
                 i < textToFind.Length
                 && x + (i * xDelta) >= 0
                 && y + (i * yDelta) >= 0
