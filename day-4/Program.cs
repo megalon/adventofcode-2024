@@ -1,4 +1,4 @@
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace aoc_2024_day_4
 {
@@ -33,7 +33,7 @@ namespace aoc_2024_day_4
 
                     //Console.Write(c);
 
-                    total += Part1(matrix, x, y);
+                    total += Part2(matrix, x, y);
                 }
 
                 //Console.WriteLine();
@@ -41,7 +41,6 @@ namespace aoc_2024_day_4
 
             Console.WriteLine(total);
         }
-
 
         private static int Part1(char[,] matrix, int x, int y)
         {
@@ -59,6 +58,37 @@ namespace aoc_2024_day_4
             matchCount += FindDirectional(matrix, x, y, textToFind, -1, -1); // diag up left
 
             return matchCount;
+        }
+
+        private static int Part2(char[,] matrix, int x, int y)
+        {
+            string textToFind = "MAS";
+            int matchCount = 0;
+
+            if (matrix[x, y] != 'A') return 0;
+
+            // M..
+            // .A.
+            // ..S
+            matchCount += FindDirectional(matrix, x - 1, y - 1, textToFind, 1, 1); // diag down right
+
+            // ..M
+            // .A.
+            // S..
+            matchCount += FindDirectional(matrix, x + 1, y - 1, textToFind, -1, 1); // diag down left
+
+            // S..
+            // .A.
+            // ..M
+            matchCount += FindDirectional(matrix, x - 1, y + 1, textToFind, 1, -1); // diag up right
+
+            // ..S
+            // .A.
+            // M..
+            matchCount += FindDirectional(matrix, x + 1, y + 1, textToFind, -1, -1); // diag up left
+            
+            // Need two matches to make an X
+            return matchCount == 2 ? 1 : 0;
         }
 
         private static int FindDirectional(char[,] matrix, int x, int y, string textToFind, int xDelta, int yDelta)
