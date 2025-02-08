@@ -33,10 +33,10 @@ namespace aoc_2024_day_5
             }
 
             // Collect all lists of pages
-
             // Convert strings to list of ints
+            foreach (Match match in Regex.Matches(text, @"([0-9]+,)+[0-9]+([\r\n]+|$)"))
             {
-
+                Console.WriteLine(match.Value.Trim());
             }
 
             // Iterate through lists
