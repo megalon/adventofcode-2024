@@ -8,27 +8,33 @@ namespace aoc_2024_day_6
         {
             string filepath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data.txt");
             string[] lines = File.ReadAllLines(filepath);
-            Vector2Int guardPosition = new Vector2Int(0, 0);
-            MovementChoice currentDirection = MovementChoice.UP;
+            
+            char[,] matrix = new char[lines[0].Length, lines.Length];
 
-            for (int y = 0; y < lines.Length; ++y)
+            Vector2Int guardPosition = new Vector2Int(0, 0);
+            MovementChoice currentMovement = MovementChoice.UP;
+
+            // Build the char matrix
+            for (int y = 0; y < matrix.GetLength(1); ++y)
             {
-                for (int x = 0; x < lines[0].Length; ++x)
-                { 
-                    if (lines[y][x].Equals('^')) guardPosition = new Vector2Int(x, y);
+                for (int x = 0; x < matrix.GetLength(0); ++x)
+                {
+                    matrix[x, y] = lines[y][x];
+
+                    if (matrix[x, y].Equals('^')) guardPosition = new Vector2Int(x, y);
 
                     Console.Write(lines[y][x]);
                 }
                 Console.WriteLine();
             }
 
-            while (currentDirection != MovementChoice.FINISH)
+            while (currentMovement != MovementChoice.FINISH)
             {
-                currentDirection = Move(lines, ref guardPosition, currentDirection);
+                currentMovement = Move(matrix, ref guardPosition, currentMovement);
             }
         }
 
-        private static MovementChoice Move(string[] lines, ref Vector2Int guardPosition, MovementChoice direction)
+        private static MovementChoice Move(char[,] matrix, ref Vector2Int guardPosition, MovementChoice direction)
         {
             Vector2Int delta = new Vector2Int(0, 0);
 
@@ -43,6 +49,8 @@ namespace aoc_2024_day_6
                 default: return MovementChoice.FINISH;
             }
 
+            matrix[guardPosition.x, guardPosition.y] = 'X';
+            
             Vector2Int nextPosition = new Vector2Int(0, 0);
 
             while (true)
@@ -51,44 +59,31 @@ namespace aoc_2024_day_6
 
                 if (nextPosition.x < 0
                  || nextPosition.y < 0
-                 || nextPosition.x > lines[0].Length - 1
-                 || nextPosition.y > lines.Length - 1)
+                 || nextPosition.x > matrix.GetLength(0) - 1
+                 || nextPosition.y > matrix.GetLength(1) - 1)
                 {
                     return MovementChoice.FINISH;
                 }
 
                 // If we hit an obstacle
-                if (lines[nextPosition.y][nextPosition.x] == '#')
+                if (matrix[nextPosition.x, nextPosition.y] == '#')
                 {
                     break;
                 }
 
-                // Oh this doesn't work because strings are immutable...
-                //lines[guardPosition.y][guardPosition.x] = 'X';
-
                 guardPosition += delta;
+                matrix[guardPosition.x, guardPosition.y] = 'X';
 
-                // This is just for printing the movement to console
-                for (int y = 0; y < lines.Length; ++y)
+                // Print movement to console
+                for (int y = 0; y < matrix.GetLength(1); ++y)
                 {
-                    for (int x = 0; x < lines[0].Length; ++x)
+                    for (int x = 0; x < matrix.GetLength(0); ++x)
                     {
-                        if (lines[y][x].Equals('^'))
-                        {
-                            Console.Write('.');
-                        } else if (y == guardPosition.y && x == guardPosition.x)
-                        {
-                            Console.Write('^');
-                        }
-                        else
-                        {
-                            Console.Write(lines[y][x]);
-                        }
+                        Console.Write(matrix[x, y]);
                     }
                     Console.WriteLine();
                 }
                 Console.WriteLine();
-
             }
 
             return nextMove;
