@@ -3,6 +3,7 @@
     internal class Program
     {
         private static int loopCounter = 0;
+        private static Vector2Int startingPos;
 
         static void Main(string[] args)
         {
@@ -26,6 +27,8 @@
                 }
                 //Console.WriteLine();
             }
+
+            startingPos = guardPosition;
 
             Stack<CollisionPoint> collisionPoints = new Stack<CollisionPoint>();
             collisionPoints.Push(MoveStraight(matrix, ref guardPosition, Direction.UP));
@@ -70,7 +73,7 @@
             {
                 nextPosition = guardPosition + delta;
 
-                PrintMovement(matrix, guardPosition);
+                //PrintMovement(matrix, guardPosition);
 
                 switch (CheckCollision(matrix, nextPosition))
                 {
@@ -79,10 +82,8 @@
                     case CollisionType.OBJECT:
                         return new CollisionPoint(guardPosition, direction, CollisionType.OBJECT);
                     default:
-                        if (!loopCheck)
+                        if (!loopCheck && nextPosition != startingPos)
                         {
-                            matrix[guardPosition.x, guardPosition.y] = 'X';
-
                             // Store old character at the new position so we can set it to an obstacle temporarily
                             char oldChar = matrix[nextPosition.x, nextPosition.y];
                             matrix[nextPosition.x, nextPosition.y] = '#';
@@ -113,6 +114,9 @@
                         }
 
                         guardPosition += delta;
+
+                        if (!loopCheck)
+                            matrix[guardPosition.x, guardPosition.y] = 'X';
 
                         break;
                 }
@@ -170,6 +174,17 @@
 
             // I think I'm overengineering this puzzle haha
             public static Vector2Int operator +(Vector2Int a, Vector2Int b) => new Vector2Int(a.x + b.x, a.y + b.y);
+            public static bool operator ==(Vector2Int a, Vector2Int b)
+            {
+                return a.x == b.x
+                    && a.y == b.y;
+            }
+
+            public static bool operator !=(Vector2Int a, Vector2Int b)
+            {
+                return a.x != b.x
+                    && a.y != b.y;
+            }
         }
 
         private struct CollisionPoint
@@ -188,15 +203,13 @@
 
             public static bool operator ==(CollisionPoint a, CollisionPoint b)
             {
-                return a.pos.x == b.pos.x 
-                    && a.pos.y == b.pos.y 
+                return a.pos == b.pos
                     && a.directionWhenHit == b.directionWhenHit;
             }
 
             public static bool operator !=(CollisionPoint a, CollisionPoint b)
             {
-                return a.pos.x != b.pos.x 
-                    || a.pos.y != b.pos.y 
+                return a.pos.x != b.pos.x
                     || a.directionWhenHit != b.directionWhenHit;
             }
 
