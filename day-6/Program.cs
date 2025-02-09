@@ -32,6 +32,14 @@ namespace aoc_2024_day_6
             {
                 currentMovement = Move(matrix, ref guardPosition, currentMovement);
             }
+
+            int total = 0;
+            foreach (char c  in matrix)
+            {
+                if (c == 'X') ++total;
+            }
+
+            Console.WriteLine(total);
         }
 
         private static MovementChoice Move(char[,] matrix, ref Vector2Int guardPosition, MovementChoice direction)
