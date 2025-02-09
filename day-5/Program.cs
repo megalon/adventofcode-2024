@@ -40,17 +40,25 @@ namespace aoc_2024_day_5
                 // Convert strings to array of ints
                 int[] pagesArray = match.Value.Split(',').Select(int.Parse).ToArray();
 
-                totalPart1 += Part1(match, pagesArray, rulesDict);
-                totalPart2 += Part2(match, pagesArray, rulesDict);
+                if (Part1(match, pagesArray, rulesDict, out int result))
+                {
+                    totalPart1 += result;
+                } else
+                {
+                    totalPart2 += Part2(match, pagesArray, rulesDict);
+                }
             }
 
             Console.WriteLine(totalPart1);
             Console.WriteLine(totalPart2);
         }
 
-        private static int Part1(Match match, int[] pagesArray, Dictionary<int, List<int>> rulesDict)
+        /// <param name="result">Value of middle page in array</param>
+        /// <returns>True if this array is valid</returns>
+        private static bool Part1(Match match, int[] pagesArray, Dictionary<int, List<int>> rulesDict, out int result)
         {
             bool valid = true;
+            result = 0;
 
             // Iterate backwards because we want to test elements preceding the current element
             for (int i = pagesArray.Length - 1; i >= 0; --i)
@@ -78,15 +86,34 @@ namespace aoc_2024_day_5
 
             Console.WriteLine($"{match.Value.Trim()} -> {(valid ? "VALID" : "INVALID")}");
 
-            if (valid) return 1;
+            if (!valid) return false;
 
-            // add middle value to total
-            return pagesArray[(int)Math.Ceiling(pagesArray.Length / 2.0) - 1];
+            result = pagesArray[GetCenterArrayIndex(pagesArray.Length)];
+            return true;
         }
 
         private static int Part2(Match match, int[] pagesArray, Dictionary<int, List<int>> rulesDict)
         {
-            return 0;
+            Console.WriteLine($"BEFORE SORT: {match.Value.Trim()}");
+
+            List<int> list = pagesArray.ToList();
+            list.Sort(delegate (int x, int y)
+            {
+                if (x == y) return 0;
+
+                if (!rulesDict.ContainsKey(x)) return 0;
+
+                return rulesDict[x].Contains(y) ? -1 : 1;
+            });
+
+            Console.WriteLine($"AFTER  SORT: {String.Join(',', list.ToArray())}");
+
+            return list[GetCenterArrayIndex(list.Count)];
+        }
+
+        private static int GetCenterArrayIndex(int size)
+        {
+            return (int)Math.Ceiling(size / 2.0) - 1;
         }
     }
 }
