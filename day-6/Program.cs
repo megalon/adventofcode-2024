@@ -1,4 +1,6 @@
-﻿namespace aoc_2024_day_6
+﻿using System.Numerics;
+
+namespace aoc_2024_day_6
 {
     internal class Program
     {
@@ -6,16 +8,15 @@
         {
             string filepath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data.txt");
             string[] lines = File.ReadAllLines(filepath);
+            Vector2 guardVector = new Vector2();
 
-            char[,] matrix = new char[lines[0].Length, lines.Length];
-
-            for (int y = 0; y < matrix.GetLength(1); ++y)
+            for (int y = 0; y < lines.Length; ++y)
             {
-                for (int x = 0; x < matrix.GetLength(0); ++x)
-                {
-                    matrix[x, y] = lines[y][x];
+                for (int x = 0; x < lines[0].Length; ++x)
+                { 
+                    if (lines[y][x].Equals('^')) guardVector = new Vector2(x, y);
 
-                    Console.Write(matrix[x, y]);
+                    Console.Write(lines[y][x]);
                 }
                 Console.WriteLine();
             }
