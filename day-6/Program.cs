@@ -23,9 +23,9 @@ namespace aoc_2024_day_6
 
                     if (matrix[x, y].Equals('^')) guardPosition = new Vector2Int(x, y);
 
-                    Console.Write(lines[y][x]);
+                    //Console.Write(lines[y][x]);
                 }
-                Console.WriteLine();
+                //Console.WriteLine();
             }
 
             while (currentMovement != MovementChoice.FINISH)
@@ -83,15 +83,15 @@ namespace aoc_2024_day_6
                 matrix[guardPosition.x, guardPosition.y] = 'X';
 
                 // Print movement to console
-                for (int y = 0; y < matrix.GetLength(1); ++y)
-                {
-                    for (int x = 0; x < matrix.GetLength(0); ++x)
-                    {
-                        Console.Write(matrix[x, y]);
-                    }
-                    Console.WriteLine();
-                }
-                Console.WriteLine();
+                //for (int y = 0; y < matrix.GetLength(1); ++y)
+                //{
+                //    for (int x = 0; x < matrix.GetLength(0); ++x)
+                //    {
+                //        Console.Write(matrix[x, y]);
+                //    }
+                //    Console.WriteLine();
+                //}
+                //Console.WriteLine();
             }
 
             return nextMove;
