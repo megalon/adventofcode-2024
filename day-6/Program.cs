@@ -1,9 +1,9 @@
-﻿using System.Numerics;
-
-namespace aoc_2024_day_6
+﻿namespace aoc_2024_day_6
 {
     internal class Program
     {
+        private static int loopCounter = 0;
+
         static void Main(string[] args)
         {
             string filepath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data.txt");
@@ -45,7 +45,8 @@ namespace aoc_2024_day_6
                 if (c == 'X') ++total;
             }
 
-            Console.WriteLine(total);
+            Console.WriteLine("Part 1: " + total);
+            Console.WriteLine("Part 2: " + loopCounter);
         }
 
         private static CollisionPoint MoveStraight(char[,] matrix, ref Vector2Int guardPosition, Direction direction, bool loopCheck = false)
@@ -69,6 +70,8 @@ namespace aoc_2024_day_6
             {
                 nextPosition = guardPosition + delta;
 
+                PrintMovement(matrix, guardPosition);
+
                 switch (CheckCollision(matrix, nextPosition))
                 {
                     case CollisionType.OUT_OF_BOUNDS:
@@ -76,13 +79,41 @@ namespace aoc_2024_day_6
                     case CollisionType.OBJECT:
                         return new CollisionPoint(guardPosition, direction, CollisionType.OBJECT);
                     default:
-                        guardPosition += delta;
                         if (!loopCheck)
                         {
                             matrix[guardPosition.x, guardPosition.y] = 'X';
-                            //Vector2Int tempPositionTracker = nextPosition;
-                            //MoveStraight(matrix, ref tempPositionTracker, CollisionPoint.CalculateNextDirection(direction), true); 
+
+                            // Store old character at the new position so we can set it to an obstacle temporarily
+                            char oldChar = matrix[nextPosition.x, nextPosition.y];
+                            matrix[nextPosition.x, nextPosition.y] = '#';
+
+                            Stack<CollisionPoint> collisionPoints = new Stack<CollisionPoint>();
+
+                            Vector2Int tempPositionTracker = new Vector2Int(guardPosition.x, guardPosition.y);  
+                            
+                            Console.WriteLine($"Checking for loops at {guardPosition.x}, {guardPosition.y}");
+
+                            collisionPoints.Push(MoveStraight(matrix, ref tempPositionTracker, CollisionPoint.CalculateNextDirection(direction), true));
+
+                            // Keep going until we go out of bounds or connect back with a previous point (a loop!)
+                            while (collisionPoints.Peek().collisionType != CollisionType.OUT_OF_BOUNDS)
+                            {
+                                CollisionPoint point = MoveStraight(matrix, ref tempPositionTracker, collisionPoints.Peek().nextDirection, true);
+
+                                if (collisionPoints.Where(p => p == point).Any())
+                                {
+                                    ++loopCounter;
+                                    break;
+                                }
+
+                                collisionPoints.Push(point);
+                            }
+
+                            matrix[nextPosition.x, nextPosition.y] = oldChar;
                         }
+
+                        guardPosition += delta;
+
                         break;
                 }
             }
@@ -106,14 +137,20 @@ namespace aoc_2024_day_6
             return CollisionType.NONE;
         }
 
-        private void PrintMovement(char[,] matrix)
+        private static void PrintMovement(char[,] matrix, Vector2Int cursorPos)
         {
             // Print movement to console
             for (int y = 0; y < matrix.GetLength(1); ++y)
             {
                 for (int x = 0; x < matrix.GetLength(0); ++x)
                 {
-                    Console.Write(matrix[x, y]);
+                    if (cursorPos.x == x && cursorPos.y == y)
+                    {
+                        Console.Write("*");
+                    } else
+                    {
+                        Console.Write(matrix[x, y]);
+                    }
                 }
                 Console.WriteLine();
             }
@@ -149,6 +186,20 @@ namespace aoc_2024_day_6
                 this.collisionType = collisionType;
             }
 
+            public static bool operator ==(CollisionPoint a, CollisionPoint b)
+            {
+                return a.pos.x == b.pos.x 
+                    && a.pos.y == b.pos.y 
+                    && a.directionWhenHit == b.directionWhenHit;
+            }
+
+            public static bool operator !=(CollisionPoint a, CollisionPoint b)
+            {
+                return a.pos.x != b.pos.x 
+                    || a.pos.y != b.pos.y 
+                    || a.directionWhenHit != b.directionWhenHit;
+            }
+
             public static Direction CalculateNextDirection(Direction choice)
             {
                 switch (choice)
@@ -173,7 +224,8 @@ namespace aoc_2024_day_6
         {
             NONE,
             OBJECT,
-            OUT_OF_BOUNDS
+            OUT_OF_BOUNDS,
+            LOOP_BARRIER
         }
     }
 }
