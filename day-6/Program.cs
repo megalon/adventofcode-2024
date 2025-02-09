@@ -1,4 +1,4 @@
-﻿namespace aoc_2024_day_6
+namespace aoc_2024_day_6
 {
     internal class Program
     {
@@ -183,7 +183,7 @@
             public static bool operator !=(Vector2Int a, Vector2Int b)
             {
                 return a.x != b.x
-                    && a.y != b.y;
+                    || a.y != b.y;
             }
         }
 
