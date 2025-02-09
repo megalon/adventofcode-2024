@@ -28,16 +28,16 @@ namespace aoc_2024_day_6
             }
 
             Stack<CollisionPoint> collisionPoints = new Stack<CollisionPoint>();
-            collisionPoints.Push(MoveStraight(matrix, ref guardPosition, MovementChoice.UP));
+            collisionPoints.Push(MoveStraight(matrix, ref guardPosition, Direction.UP));
 
             while (collisionPoints.Peek().collisionType != CollisionType.OUT_OF_BOUNDS)
             {
-                Console.WriteLine($"Collided at ({collisionPoints.Peek().pos.x}, {collisionPoints.Peek().pos.y}) moving {collisionPoints.Peek().movementWhenHit.ToString()}");
+                Console.WriteLine($"Collided at ({collisionPoints.Peek().pos.x}, {collisionPoints.Peek().pos.y}) moving {collisionPoints.Peek().directionWhenHit.ToString()}");
                 
-                collisionPoints.Push(MoveStraight(matrix, ref guardPosition, collisionPoints.Peek().nextMove));
+                collisionPoints.Push(MoveStraight(matrix, ref guardPosition, collisionPoints.Peek().nextDirection));
             }
 
-            Console.WriteLine($"Finished at ({collisionPoints.Peek().pos.x}, {collisionPoints.Peek().pos.y}) moving {collisionPoints.Peek().movementWhenHit.ToString()}");
+            Console.WriteLine($"Finished at ({collisionPoints.Peek().pos.x}, {collisionPoints.Peek().pos.y}) moving {collisionPoints.Peek().directionWhenHit.ToString()}");
 
             int total = 0;
             foreach (char c  in matrix)
@@ -48,19 +48,19 @@ namespace aoc_2024_day_6
             Console.WriteLine(total);
         }
 
-        private static CollisionPoint MoveStraight(char[,] matrix, ref Vector2Int guardPosition, MovementChoice direction, bool leaveMark = true)
+        private static CollisionPoint MoveStraight(char[,] matrix, ref Vector2Int guardPosition, Direction direction, bool loopCheck = false)
         {
             Vector2Int delta = new Vector2Int(0, 0);
 
-            if (leaveMark)
+            if (!loopCheck)
                 matrix[guardPosition.x, guardPosition.y] = 'X';
 
             switch (direction)
             {
-                case MovementChoice.UP: delta = new Vector2Int(0, -1); break;
-                case MovementChoice.DOWN: delta = new Vector2Int(0, 1); break;
-                case MovementChoice.LEFT: delta = new Vector2Int(-1, 0); break;
-                case MovementChoice.RIGHT: delta = new Vector2Int(1, 0); break;
+                case Direction.UP: delta = new Vector2Int(0, -1); break;
+                case Direction.DOWN: delta = new Vector2Int(0, 1); break;
+                case Direction.LEFT: delta = new Vector2Int(-1, 0); break;
+                case Direction.RIGHT: delta = new Vector2Int(1, 0); break;
             }
             
             Vector2Int nextPosition = new Vector2Int(0, 0);
@@ -77,8 +77,12 @@ namespace aoc_2024_day_6
                         return new CollisionPoint(guardPosition, direction, CollisionType.OBJECT);
                     default:
                         guardPosition += delta;
-                        if (leaveMark)
+                        if (!loopCheck)
+                        {
                             matrix[guardPosition.x, guardPosition.y] = 'X';
+                            //Vector2Int tempPositionTracker = nextPosition;
+                            //MoveStraight(matrix, ref tempPositionTracker, CollisionPoint.CalculateNextDirection(direction), true); 
+                        }
                         break;
                 }
             }
@@ -134,30 +138,30 @@ namespace aoc_2024_day_6
         private struct CollisionPoint
         {
             public Vector2Int pos { get; }
-            public MovementChoice movementWhenHit { get; }
-            public MovementChoice nextMove { get { return CalculateNextMove(); } }
+            public Direction directionWhenHit { get; }
+            public Direction nextDirection { get { return CalculateNextDirection(directionWhenHit); } }
             public CollisionType collisionType { get; }
 
-            public CollisionPoint(Vector2Int pos, MovementChoice movementWhenHit, CollisionType collisionType)
+            public CollisionPoint(Vector2Int pos, Direction directionWhenHit, CollisionType collisionType)
             {
                 this.pos = pos;
-                this.movementWhenHit = movementWhenHit;
+                this.directionWhenHit = directionWhenHit;
                 this.collisionType = collisionType;
             }
 
-            private MovementChoice CalculateNextMove()
+            public static Direction CalculateNextDirection(Direction choice)
             {
-                switch (movementWhenHit)
+                switch (choice)
                 {
-                    case MovementChoice.DOWN: return MovementChoice.LEFT;
-                    case MovementChoice.LEFT: return MovementChoice.UP;
-                    case MovementChoice.RIGHT: return MovementChoice.DOWN;
-                    default: return MovementChoice.RIGHT;
+                    case Direction.DOWN: return Direction.LEFT;
+                    case Direction.LEFT: return Direction.UP;
+                    case Direction.RIGHT: return Direction.DOWN;
+                    default: return Direction.RIGHT;
                 }
             }
         }
 
-        public enum MovementChoice
+        public enum Direction
         {
             UP,
             DOWN,
