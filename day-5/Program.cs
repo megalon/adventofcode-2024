@@ -49,8 +49,8 @@ namespace aoc_2024_day_5
                 }
             }
 
-            Console.WriteLine(totalPart1);
-            Console.WriteLine(totalPart2);
+            Console.WriteLine("Part 1: " + totalPart1);
+            Console.WriteLine("Part 2: " + totalPart2);
         }
 
         /// <param name="result">Value of middle page in array</param>
