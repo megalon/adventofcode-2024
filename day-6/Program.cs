@@ -27,15 +27,17 @@ namespace aoc_2024_day_6
                 //Console.WriteLine();
             }
 
-            CollisionPoint collisionPoint = Move(matrix, ref guardPosition, MovementChoice.UP);
+            Stack<CollisionPoint> collisionPoints = new Stack<CollisionPoint>();
+            collisionPoints.Push(Move(matrix, ref guardPosition, MovementChoice.UP));
 
-            while (!collisionPoint.isOutOfBounds)
+            while (!collisionPoints.Peek().isOutOfBounds)
             {
-                Console.WriteLine($"Collided at ({collisionPoint.pos.x}, {collisionPoint.pos.y}) moving {collisionPoint.movementWhenHit.ToString()}");
-                collisionPoint = Move(matrix, ref guardPosition, collisionPoint.nextMove);
+                Console.WriteLine($"Collided at ({collisionPoints.Peek().pos.x}, {collisionPoints.Peek().pos.y}) moving {collisionPoints.Peek().movementWhenHit.ToString()}");
+                
+                collisionPoints.Push(Move(matrix, ref guardPosition, collisionPoints.Peek().nextMove));
             }
 
-            Console.WriteLine($"Finished at ({collisionPoint.pos.x}, {collisionPoint.pos.y}) moving {collisionPoint.movementWhenHit.ToString()}");
+            Console.WriteLine($"Finished at ({collisionPoints.Peek().pos.x}, {collisionPoints.Peek().pos.y}) moving {collisionPoints.Peek().movementWhenHit.ToString()}");
 
             int total = 0;
             foreach (char c  in matrix)
