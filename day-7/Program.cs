@@ -1,4 +1,6 @@
-﻿namespace aoc_2024_day_7
+﻿using System.Text.RegularExpressions;
+
+namespace aoc_2024_day_7
 {
     internal class Program
     {
@@ -10,6 +12,9 @@
 
             foreach (string line in text) {
                 Console.WriteLine(line);
+
+                int target = int.Parse(line.Substring(0, line.IndexOf(':')));
+                int[] values = line.Substring(line.IndexOf(": ") + 2).Split(' ').Select(int.Parse).ToArray();
             }
         }
     }
