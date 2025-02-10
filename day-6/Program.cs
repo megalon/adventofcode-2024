@@ -71,9 +71,9 @@
 
             while (true)
             {
-                nextPosition = guardPosition + delta;
-
                 //PrintMovement(matrix, guardPosition);
+
+                nextPosition = guardPosition + delta;
 
                 switch (CheckCollision(matrix, nextPosition))
                 {
@@ -93,8 +93,6 @@
                             Stack<CollisionPoint> collisionPoints = new Stack<CollisionPoint>();
 
                             Vector2Int tempPositionTracker = new Vector2Int(guardPosition.x, guardPosition.y);
-
-                            //Console.WriteLine($"Checking for loops at {guardPosition.x}, {guardPosition.y}");
 
                             collisionPoints.Push(new CollisionPoint(guardPosition, direction, CollisionType.LOOP_BARRIER));
 
