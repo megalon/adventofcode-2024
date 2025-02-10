@@ -1,4 +1,4 @@
-namespace aoc_2024_day_6
+﻿namespace aoc_2024_day_6
 {
     internal class Program
     {
@@ -35,8 +35,6 @@ namespace aoc_2024_day_6
 
             while (collisionPoints.Peek().collisionType != CollisionType.OUT_OF_BOUNDS)
             {
-                Console.WriteLine($"Collided at ({collisionPoints.Peek().pos.x}, {collisionPoints.Peek().pos.y}) moving {collisionPoints.Peek().directionWhenHit.ToString()}");
-                
                 collisionPoints.Push(MoveStraight(matrix, ref guardPosition, collisionPoints.Peek().nextDirection));
             }
 
@@ -47,6 +45,8 @@ namespace aoc_2024_day_6
             {
                 if (c == 'X') ++total;
             }
+
+            PrintMovement(matrix, new Vector2Int(-1, -1));
 
             Console.WriteLine("Part 1: " + total);
             Console.WriteLine("Part 2: " + loopCounter);
@@ -82,7 +82,9 @@ namespace aoc_2024_day_6
                     case CollisionType.OBJECT:
                         return new CollisionPoint(guardPosition, direction, CollisionType.OBJECT);
                     default:
-                        if (!loopCheck && nextPosition != startingPos)
+                        if (!loopCheck 
+                            && nextPosition != startingPos 
+                            && matrix[nextPosition.x, nextPosition.y] != 'X') // We can't put an obstacle on the path we've already crossed
                         {
                             // Store old character at the new position so we can set it to an obstacle temporarily
                             char oldChar = matrix[nextPosition.x, nextPosition.y];
@@ -90,19 +92,22 @@ namespace aoc_2024_day_6
 
                             Stack<CollisionPoint> collisionPoints = new Stack<CollisionPoint>();
 
-                            Vector2Int tempPositionTracker = new Vector2Int(guardPosition.x, guardPosition.y);  
-                            
-                            Console.WriteLine($"Checking for loops at {guardPosition.x}, {guardPosition.y}");
+                            Vector2Int tempPositionTracker = new Vector2Int(guardPosition.x, guardPosition.y);
 
-                            collisionPoints.Push(MoveStraight(matrix, ref tempPositionTracker, CollisionPoint.CalculateNextDirection(direction), true));
+                            //Console.WriteLine($"Checking for loops at {guardPosition.x}, {guardPosition.y}");
+
+                            collisionPoints.Push(new CollisionPoint(guardPosition, direction, CollisionType.LOOP_BARRIER));
 
                             // Keep going until we go out of bounds or connect back with a previous point (a loop!)
                             while (collisionPoints.Peek().collisionType != CollisionType.OUT_OF_BOUNDS)
                             {
                                 CollisionPoint point = MoveStraight(matrix, ref tempPositionTracker, collisionPoints.Peek().nextDirection, true);
 
+
+                                // Check if we have already hit this point,
                                 if (collisionPoints.Where(p => p == point).Any())
                                 {
+                                    Console.WriteLine($"Found loop if obstacle is at ({nextPosition.x}, {nextPosition.y})");
                                     ++loopCounter;
                                     break;
                                 }
