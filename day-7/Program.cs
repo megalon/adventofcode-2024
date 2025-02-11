@@ -1,4 +1,4 @@
-﻿using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;
 
 namespace aoc_2024_day_7
 {
@@ -10,32 +10,32 @@ namespace aoc_2024_day_7
 
             string[] text = File.ReadAllLines(filepath);
 
-            int numValid = 0;
+            ulong total = 0;
 
             foreach (string line in text) {
-                Console.WriteLine(line);
+                ulong target = ulong.Parse(line.Substring(0, line.IndexOf(':')));
+                uint[] values = line.Split(": ")[1].Split(' ').Select(uint.Parse).ToArray();
 
-                int target = int.Parse(line.Substring(0, line.IndexOf(':')));
-                int[] values = line.Substring(line.IndexOf(": ") + 2).Split(' ').Select(int.Parse).ToArray();
+                //Console.WriteLine(target + ": " + String.Join(' ', values));
 
                 if (DoesCalculate(values, 0, target, 0))
                 {
-                    ++numValid;
+                    total += target;
                 }
             }
 
-            Console.WriteLine(numValid);
+            Console.WriteLine(total);
         }
 
-        private static bool DoesCalculate(int[] values, int total, int target, int index)
+        private static bool DoesCalculate(uint[] values, ulong result, ulong target, int index)
         {
             if (index == values.Length)
             {
-                return total == target;
+                return result == target;
             }
 
-            return DoesCalculate(values, total + values[index], target, index + 1)
-                || DoesCalculate(values, total * values[index], target, index + 1);
+            return DoesCalculate(values, result + values[index], target, index + 1)
+                || DoesCalculate(values, result * values[index], target, index + 1);
         }
     }
 }
