@@ -1,4 +1,4 @@
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace aoc_2024_day_7
 {
@@ -18,7 +18,7 @@ namespace aoc_2024_day_7
 
                 //Console.WriteLine(target + ": " + String.Join(' ', values));
 
-                if (DoesCalculate(values, 0, target, 0))
+                if (DoesCalculate(values, values[0], target, 1))
                 {
                     total += target;
                 }
