@@ -13,10 +13,10 @@ namespace aoc_2024_day_7
             ulong total = 0;
 
             foreach (string line in text) {
-                ulong target = ulong.Parse(line.Substring(0, line.IndexOf(':')));
+                ulong target = ulong.Parse(line.Split(": ")[0]);
                 uint[] values = line.Split(": ")[1].Split(' ').Select(uint.Parse).ToArray();
 
-                //Console.WriteLine(target + ": " + String.Join(' ', values));
+                Console.WriteLine(target + ": " + String.Join(' ', values));
 
                 if (DoesCalculate(values, values[0], target, 1))
                 {
