@@ -1,7 +1,7 @@
 ﻿/*
- * Part 2 took me more time than usual because I misunderstood the question.
+ * I misunderstood the question for part 2, so it took me a long time to arrive at the answer
  * 
- * Originally, I was concatenating before evlauting with the result
+ * Originally, I was concatenating before evaluting with the result
  * Like this:
  * 1 + 1 + 1 || 1 + 1
  *     2 + 1 || 1 + 1
@@ -21,6 +21,7 @@
  * 
  * This looks pretty obvious when you work through the problem like this.
  * Once I realized I was trying to solve the wrong problem it was fairly easy to fix.
+ * I was then able to greatly simplify the code.
  * 
  * */
 
@@ -46,11 +47,11 @@ namespace aoc_2024_day_7
 
                 if (DoesCalculate(values, values[0], target, 0, "" + values[0]))
                 {
-                    Console.WriteLine("^^^ VALID ^^^");
+                    Console.WriteLine($"{target} is valid! ^^^");
                     total += target;
                 } else
                 {
-                    Console.WriteLine("^^ INVALID ^^^");
+                    Console.WriteLine($"{target} is invalid.");
                 }
             }
 
@@ -82,8 +83,8 @@ namespace aoc_2024_day_7
                     break;
             };
 
-            if (index + 1 >= values.Length)
-                Console.WriteLine($"{equation} = {result}");
+            //if (index + 1 >= values.Length)
+            //    Console.WriteLine($"{equation} = {result}");
 
             return DoesCalculate(values, result, target, index + 1, equation, Ops.ADD)
                 || DoesCalculate(values, result, target, index + 1, equation, Ops.MULT)
