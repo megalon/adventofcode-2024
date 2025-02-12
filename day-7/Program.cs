@@ -1,4 +1,30 @@
-﻿using System.Text.RegularExpressions;
+﻿/*
+ * Part 2 took me more time than usual because I misunderstood the question.
+ * 
+ * Originally, I was concatenating before evlauting with the result
+ * Like this:
+ * 1 + 1 + 1 || 1 + 1
+ *     2 + 1 || 1 + 1
+ *     2 +     11 + 1
+ *             13 + 1
+ *                 14
+ * 
+ * But since the operations are evaluated left to right,
+ * and the concat operator is just an operator like "+" or "*"
+ * you are supposed to concat onto the result of the prior operators
+ * like this
+ * 1 + 1 + 1 || 1 + 1
+ *     2 + 1 || 1 + 1
+ *         3 || 1 + 1
+ *             31 + 1
+ *                 32
+ * 
+ * This looks pretty obvious when you work through the problem like this.
+ * Once I realized I was trying to solve the wrong problem it was fairly easy to fix.
+ * 
+ * */
+
+using System.Text.RegularExpressions;
 
 namespace aoc_2024_day_7
 {
@@ -14,7 +40,7 @@ namespace aoc_2024_day_7
 
             foreach (string line in text) {
                 ulong target = ulong.Parse(line.Split(": ")[0]);
-                uint[] values = line.Split(": ")[1].Split(' ').Select(uint.Parse).ToArray();
+                ulong[] values = line.Split(": ")[1].Split(' ').Select(ulong.Parse).ToArray();
 
                 Console.WriteLine(target + ": " + String.Join(' ', values));
 
@@ -31,7 +57,7 @@ namespace aoc_2024_day_7
             Console.WriteLine("Total: " + total);
         }
 
-        private static bool DoesCalculate(uint[] values, ulong result, ulong target, int index, string equation, Ops op = Ops.START)
+        private static bool DoesCalculate(ulong[] values, ulong result, ulong target, int index, string equation, Ops op = Ops.START)
         {
             if (index >= values.Length)
             {
@@ -48,44 +74,20 @@ namespace aoc_2024_day_7
                     equation += " * " + values[index];
                     result *= values[index];
                     break;
+                case Ops.CONCAT:
+                    equation = equation + " || " + values[index];
+                    result = ulong.Parse($"{result}{values[index]}");
+                    break;
                 default:
                     break;
             };
 
-            if (index < values.Length - 1)
-            {
-                uint[] concatValues = new uint[values.Length - index - 1];
-
-                concatValues[0] = uint.Parse($"{result}{values[index + 1]}");
-
-                // Skip first two elements because we just concatanated them above
-                for (int i = index + 2; i < values.Length; ++i)
-                {
-                    // offset concat index because array is smaller
-                    concatValues[i - index - 1] = values[i];
-                }
-
-                // Call using the new concat values
-                // DON'T increase index because the array is 1 smaller so everything was shifted up anyway
-                if (DoesCalculate(
-                        concatValues,
-                        concatValues[0],
-                        target,
-                        index,
-                        equation + " || " + values[index + 1],
-                        op
-                    ))
-                {
-                    return true;
-                }
-            }
-
-            Console.WriteLine($"{equation}{(index < values.Length - 1 ? "" : " = " + result)}");
-
-            equation = "  " + equation;
+            if (index + 1 >= values.Length)
+                Console.WriteLine($"{equation} = {result}");
 
             return DoesCalculate(values, result, target, index + 1, equation, Ops.ADD)
-                || DoesCalculate(values, result, target, index + 1, equation, Ops.MULT);
+                || DoesCalculate(values, result, target, index + 1, equation, Ops.MULT)
+                || DoesCalculate(values, result, target, index + 1, equation, Ops.CONCAT);
         }
 
         private enum Ops
