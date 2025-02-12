@@ -18,7 +18,7 @@ namespace aoc_2024_day_7
 
                 Console.WriteLine(target + ": " + String.Join(' ', values));
 
-                if (DoesCalculate(values, values[0], target, 1, "" + values[0]))
+                if (DoesCalculate(values, values[0], target, 0, "" + values[0]))
                 {
                     total += target;
                 }
@@ -40,9 +40,11 @@ namespace aoc_2024_day_7
             {
                 case Ops.ADD:
                     equation += " + " + values[index];
+                    result += values[index];
                     break;
                 case Ops.MULT:
                     equation += " * " + values[index];
+                    result *= values[index];
                     break;
                 default:
                     break;
@@ -55,8 +57,8 @@ namespace aoc_2024_day_7
                 Console.WriteLine(equation);
             }
 
-            return DoesCalculate(values, result + values[index], target, index + 1, equation, Ops.ADD, isConcat)
-                || DoesCalculate(values, result * values[index], target, index + 1, equation, Ops.MULT, isConcat);
+            return DoesCalculate(values, result, target, index + 1, equation, Ops.ADD)
+                || DoesCalculate(values, result, target, index + 1, equation, Ops.MULT);
         }
 
         private enum Ops
