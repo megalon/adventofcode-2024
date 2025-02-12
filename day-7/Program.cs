@@ -20,21 +20,23 @@ namespace aoc_2024_day_7
 
                 if (DoesCalculate(values, values[0], target, 0, "" + values[0]))
                 {
+                    Console.WriteLine("^^^ VALID ^^^");
                     total += target;
+                } else
+                {
+                    Console.WriteLine("^^ INVALID ^^^");
                 }
             }
 
-            Console.WriteLine(total);
+            Console.WriteLine("Total: " + total);
         }
 
-        private static bool DoesCalculate(uint[] values, ulong result, ulong target, int index, string equation, Ops op = Ops.NONE, bool isConcat = false)
+        private static bool DoesCalculate(uint[] values, ulong result, ulong target, int index, string equation, Ops op = Ops.START)
         {
-            if (index == values.Length)
+            if (index >= values.Length)
             {
                 return result == target;
             }
-
-            equation = "|" + equation;
 
             switch (op)
             {
@@ -50,12 +52,37 @@ namespace aoc_2024_day_7
                     break;
             };
 
-            if (index + 1 == values.Length) { 
-                Console.WriteLine(equation + " = " + result);
-            } else
+            if (index < values.Length - 1)
             {
-                Console.WriteLine(equation);
+                uint[] concatValues = new uint[values.Length - index - 1];
+
+                concatValues[0] = uint.Parse($"{result}{values[index + 1]}");
+
+                // Skip first two elements because we just concatanated them above
+                for (int i = index + 2; i < values.Length; ++i)
+                {
+                    // offset concat index because array is smaller
+                    concatValues[i - index - 1] = values[i];
+                }
+
+                // Call using the new concat values
+                // DON'T increase index because the array is 1 smaller so everything was shifted up anyway
+                if (DoesCalculate(
+                        concatValues,
+                        concatValues[0],
+                        target,
+                        index,
+                        equation + " || " + values[index + 1],
+                        op
+                    ))
+                {
+                    return true;
+                }
             }
+
+            Console.WriteLine($"{equation}{(index < values.Length - 1 ? "" : " = " + result)}");
+
+            equation = "  " + equation;
 
             return DoesCalculate(values, result, target, index + 1, equation, Ops.ADD)
                 || DoesCalculate(values, result, target, index + 1, equation, Ops.MULT);
@@ -63,7 +90,7 @@ namespace aoc_2024_day_7
 
         private enum Ops
         {
-            NONE,
+            START,
             ADD,
             MULT,
             CONCAT
