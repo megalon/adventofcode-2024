@@ -33,7 +33,7 @@ namespace aoc_2024_day_8
                 }
             }
 
-            int totalAntinodes = 0;
+            List<IVector2> allAntinodes = new List<IVector2>();
 
             foreach (char c in antennaMap.Keys)
             {
@@ -64,7 +64,10 @@ namespace aoc_2024_day_8
                     if (matrix[v.x, v.y] == '.')
                         matrix[v.x, v.y] = '#';
 
-                    ++totalAntinodes;
+                    if (!allAntinodes.Contains(v))
+                    {
+                        allAntinodes.Add(v);
+                    }
                 }
             }
 
@@ -78,7 +81,7 @@ namespace aoc_2024_day_8
             }
 
             // Display total
-            Console.WriteLine("Total: " + totalAntinodes);
+            Console.WriteLine("Total: " + allAntinodes.Count);
         }
     }
 
