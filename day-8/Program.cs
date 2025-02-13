@@ -1,5 +1,3 @@
-using System.Reflection.Metadata.Ecma335;
-
 namespace aoc_2024_day_8
 {
     internal class Program
@@ -81,7 +79,7 @@ namespace aoc_2024_day_8
             }
 
             // Display total
-            Console.WriteLine("Total: " + allAntinodes.Count);
+            Console.WriteLine("Total antinodes: " + allAntinodes.Count);
         }
     }
 
@@ -119,6 +117,7 @@ namespace aoc_2024_day_8
                 }
             }
 
+            // Sort to display neatly in the console
             antennas.Sort();
             antinodes.Sort();
 
