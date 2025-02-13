@@ -1,0 +1,22 @@
+Goal:
+Find the two antinodes for every matching pair of antennas.
+- antinodes off the map don't count
+- antinodes may be on top of other antennas
+
+Implementation:
+Create a dictionary of all the different antennas and their positions.
+Loop through dictionary and calculate anodes.
+Count all valid antinodes and add to total.
+
+class IVector2
+
+class AntennaCollection {
+	List<IVector2> antennas
+	List<IVector2> antinodes
+
+	Add(antenna) {}
+
+	CalculateAntinodes {}
+}
+
+Dictionary<char, AntennaCollection>
