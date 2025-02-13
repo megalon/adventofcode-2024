@@ -1,4 +1,4 @@
-﻿using System.Reflection.Metadata.Ecma335;
+using System.Reflection.Metadata.Ecma335;
 
 namespace aoc_2024_day_8
 {
@@ -116,6 +116,9 @@ namespace aoc_2024_day_8
                 }
             }
 
+            antennas.Sort();
+            antinodes.Sort();
+
             Console.WriteLine("antinodes count: " + antinodes.Count);
         }
 
@@ -131,7 +134,7 @@ namespace aoc_2024_day_8
         }
     }
 
-    internal class IVector2
+    internal class IVector2 : IEquatable<IVector2>, IComparable<IVector2>
     {
         public int x;
         public int y;
@@ -140,6 +143,22 @@ namespace aoc_2024_day_8
         {
             this.x = x;
             this.y = y;
+        }
+
+        public int CompareTo(IVector2? other)
+        {
+            if (other == null) return 1;
+
+            return y == other.y
+                 ? x - other.x
+                 : y - other.y;
+        }
+
+        public bool Equals(IVector2? other)
+        {
+            if (other == null) return false;
+
+            return CompareTo(other) == 0;
         }
 
         public override string ToString()
