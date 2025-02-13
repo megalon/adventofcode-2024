@@ -6,20 +6,22 @@
         {
             // read in data
             string filepath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data.txt");
-            string diskmap = File.ReadAllText(filepath);
+            string diskmap = File.ReadAllText(filepath).Trim();
 
-            Console.WriteLine(diskmap);
+            //Console.WriteLine(diskmap);
 
-            string dataString = String.Empty;
+            int blockCount = diskmap.Sum(c => c - '0');
+            int[] data = new int[blockCount];
+            int cursor = 0;
 
-            // parse diskmap into a string
+            // parse diskmap
             for (int i = 0, id = 0; i < diskmap.Length; i += 2, ++id)
             {
                 // diskmap is a string of pairs of digits
                 // 1st digit is file length
                 // 2nd digit is free space
                 // 12 = file length 1, free space 2 -> "0.."
-                
+
                 int filelength = int.Parse("" + diskmap[i]);
                 int freeSpace = 0;
 
@@ -27,37 +29,41 @@
                     freeSpace = int.Parse("" + diskmap[i + 1]);
 
                 for (int j = 0; j < filelength; ++j)
-                    dataString += "" + id;
+                    data[cursor + j] = id;
+
+                cursor += filelength;
 
                 for (int j = 0; j < freeSpace; ++j)
-                    dataString += ".";
+                    data[cursor + j] = -1;
+
+                cursor += freeSpace;
             }
-
-            Console.WriteLine(dataString);
-
-            char[] data = dataString.ToCharArray();
 
             int endIndex = data.Length - 1;
 
-            // iterate through string
             for (int i = 0; i < endIndex; ++i)
             {
-                if (data[i] != '.')
+                if (data[i] != -1)
                 {
                     continue;
                 }
 
-                while (data[endIndex] == '.')
+                while (data[endIndex] == -1)
                 {
                     --endIndex;
                 }
 
                 // take char from end and place in empty space at front
                 data[i] = data[endIndex];
-                data[endIndex] = '.';
+                data[endIndex] = -1;
                 --endIndex;
 
-                Console.WriteLine(String.Join("", data));
+                foreach (int d in data)
+                {
+                    Console.Write("" + (d == -1 ? "." : d));
+                }
+
+                Console.WriteLine();
             }
         }
     }
