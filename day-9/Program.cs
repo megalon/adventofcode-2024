@@ -35,10 +35,32 @@
 
             Console.WriteLine(data);
 
+            int endIndex = data.Length - 1;
+            string dataDefragged = String.Empty;
+
             // iterate through string
+            for (int i = 0; i < endIndex; ++i)
             {
                 // take char from end and place in empty space at front
+                if (data[i] != '.')
+                {
+                    dataDefragged += data[i];
+                    continue;
+                }
+
+                while (data[endIndex] == '.') {
+                    --endIndex;
+                }
+
+                dataDefragged += data[endIndex--];
             }
+
+            for (int i = endIndex; i < data.Length; ++i)
+            {
+                dataDefragged += '.';
+            }
+
+            Console.WriteLine(dataDefragged);
         }
     }
 }
