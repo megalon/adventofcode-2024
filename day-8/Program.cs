@@ -131,7 +131,8 @@ namespace aoc_2024_day_8
                 {
                     v2 = antennas[j];
 
-                    CalculateHarmonics(v2, mapBottomRight, new IVector2(v2 - v1));
+                    CalculateHarmonics(v2, mapBottomRight, new IVector2(v2 - v1));    // Traverse forwards
+                    CalculateHarmonics(v1, mapBottomRight, new IVector2(-(v2 - v1))); // Traverse backwards
                 }
             }
 
@@ -151,22 +152,7 @@ namespace aoc_2024_day_8
             {
                 antinodes.Add(new IVector2(harmonic));
 
-                // Traverse forwards
                 harmonic += delta;
-            }
-
-            // Start at other antenna
-            harmonic = startingPoint - delta;
-
-            while (harmonic.x <= mapBottomRight.x
-                && harmonic.y <= mapBottomRight.y
-                && harmonic.x >= 0
-                && harmonic.y >= 0)
-            {
-                antinodes.Add(new IVector2(harmonic));
-
-                // Traverse backwards
-                harmonic -= delta;
             }
         }
 
