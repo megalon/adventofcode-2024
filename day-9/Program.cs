@@ -65,6 +65,17 @@
 
                 Console.WriteLine();
             }
+
+            ulong total = 0;
+
+            for (int i = 0; i < data.Length; ++i)
+            {
+                if (data[i] == -1) break;
+
+                total += (ulong)data[i] * (ulong)i;
+            }
+
+            Console.WriteLine("Total: " + total);
         }
     }
 }
