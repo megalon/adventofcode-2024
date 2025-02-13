@@ -1,4 +1,6 @@
-﻿namespace aoc_2024_day_8
+﻿using System.Reflection.Metadata.Ecma335;
+
+namespace aoc_2024_day_8
 {
     internal class Program
     {
@@ -29,7 +31,7 @@
 
             foreach (char c in  antennaMap.Keys)
             {
-                Console.WriteLine($"{c} : {antennaMap[c]}");
+                Console.WriteLine($"{c} : {antennaMap[c].ToString()}");
             }
 
             // Iterate through antenna locations dictionary
@@ -61,6 +63,17 @@
         {
 
         }
+
+        public override string ToString()
+        {
+            string output = string.Empty;
+
+            foreach (IVector2 antenna in antennas)
+            {
+                output += antenna.ToString() + " ";
+            }
+            return output;
+        }
     }
 
     internal class IVector2
@@ -72,6 +85,11 @@
         {
             this.x = x;
             this.y = y;
+        }
+
+        public override string ToString()
+        {
+            return "(" + x + ", " + y + ")";
         }
     }
 }
