@@ -12,10 +12,14 @@ namespace aoc_2024_day_8
 
             Dictionary<char, AntennaCollection> antennaMap = new Dictionary<char, AntennaCollection>();
 
+            char[,] matrix = new char[data[0].Length, data.Length];
+
             // Iterate through data and create a dictionary containing all the antenna locations
             for (int y = 0; y < data.Length; ++y) {
                 for (int x = 0; x < data[y].Length; ++x) {
                     char c = data[y][x];
+
+                    matrix[x, y] = '.';
 
                     if (c == '.') continue;
 
@@ -29,28 +33,36 @@ namespace aoc_2024_day_8
                 }
             }
 
-            foreach (char c in  antennaMap.Keys)
+            foreach (char c in antennaMap.Keys)
             {
-                Console.WriteLine($"{c} : {antennaMap[c].ToString()}");
+                Console.WriteLine($"Antenna map for {c} : {antennaMap[c].ToString()}");
+
+                foreach (IVector2 v in antennaMap[c].antennas)
+                {
+                    matrix[v.x, v.y] = c;
+                }
             }
 
-            // Iterate through antenna locations dictionary
+            for (int y = 0; y < matrix.GetLength(1); ++y)
             {
-                // Calculate anode locations based on pairs
-
-                // Count pairs and add to total
+               for (int x = 0; x < matrix.GetLength(0); ++x)
+                {
+                    Console.Write(matrix[x, y]);
+                }
+                Console.WriteLine();
             }
-
-            // Display total
         }
     }
 
     internal class AntennaCollection
     {
-        List<IVector2> antennas = new List<IVector2>();
-        List<IVector2> antinodes = new List<IVector2>();
+        public List<IVector2> antennas { get; }
+        public List<IVector2> antinodes { get; }
 
         public AntennaCollection(IVector2 antenna) {
+            antennas = new List<IVector2>();
+            antinodes = new List<IVector2>();
+
             Add(antenna);
         }
 
