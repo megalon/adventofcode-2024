@@ -33,6 +33,8 @@ namespace aoc_2024_day_8
                 }
             }
 
+            int totalAntinodes = 0;
+
             foreach (char c in antennaMap.Keys)
             {
                 Console.WriteLine($"Antenna map for {c} : {antennaMap[c].ToString()}");
@@ -40,6 +42,29 @@ namespace aoc_2024_day_8
                 foreach (IVector2 v in antennaMap[c].antennas)
                 {
                     matrix[v.x, v.y] = c;
+                }
+
+                // Calculate antinode locations based on pairs
+                antennaMap[c].CalculateAntinodes();
+
+                // Count pairs and add to total
+                foreach (IVector2 v in antennaMap[c].antinodes)
+                {
+                    // Check if antinode is inside the bounds of the map
+                    if (v.x < 0
+                        || v.x >= data[0].Length
+                        || v.y < 0
+                        || v.y >= data.Length)
+                    {
+                        continue;
+                    }
+
+                    Console.WriteLine($"Antinode for {c}: {v.ToString()}");
+
+                    if (matrix[v.x, v.y] == '.')
+                        matrix[v.x, v.y] = '#';
+
+                    ++totalAntinodes;
                 }
             }
 
@@ -51,6 +76,9 @@ namespace aoc_2024_day_8
                 }
                 Console.WriteLine();
             }
+
+            // Display total
+            Console.WriteLine("Total: " + totalAntinodes);
         }
     }
 
@@ -73,7 +101,22 @@ namespace aoc_2024_day_8
 
         public void CalculateAntinodes()
         {
+            IVector2 v1, v2, delta;
+            for (int i = 0; i < antennas.Count; ++i)
+            {
+                v1 = antennas[i];
 
+                for (int j = i + 1; j < antennas.Count; ++j)
+                {
+                    v2 = antennas[j];
+                    delta = new IVector2(v2.x - v1.x, v2.y - v1.y);
+
+                    antinodes.Add(new IVector2(v1.x - delta.x, v1.y - delta.y));
+                    antinodes.Add(new IVector2(v2.x + delta.x, v2.y + delta.y));
+                }
+            }
+
+            Console.WriteLine("antinodes count: " + antinodes.Count);
         }
 
         public override string ToString()
