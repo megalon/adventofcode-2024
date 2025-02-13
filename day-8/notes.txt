@@ -5,7 +5,7 @@ Find the two antinodes for every matching pair of antennas.
 
 Implementation:
 Create a dictionary of all the different antennas and their positions.
-Loop through dictionary and calculate anodes.
+Loop through dictionary and calculate antinodes.
 Count all valid antinodes and add to total.
 
 class IVector2

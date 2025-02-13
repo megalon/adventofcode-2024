@@ -4,13 +4,13 @@
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, World!");
-
             // Read in data
+            string filepath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data.txt");
+            string[] data = File.ReadAllLines(filepath);
 
             // Iterate through data and create a dictionary containing all the antenna locations
-            {
-                
+            foreach (string line in data) {
+                Console.WriteLine(line);
             }
 
             // Iterate through antenna locations dictionary
