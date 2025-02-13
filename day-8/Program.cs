@@ -31,6 +31,9 @@ namespace aoc_2024_day_8
                 }
             }
 
+            IVector2 mapTopLeft = new IVector2(0, 0);
+            IVector2 mapBottomRight = new IVector2(matrix.GetLength(0) - 1, matrix.GetLength(1) - 1);
+
             List<IVector2> allAntinodes = new List<IVector2>();
 
             foreach (char c in antennaMap.Keys)
@@ -43,20 +46,10 @@ namespace aoc_2024_day_8
                 }
 
                 // Calculate antinode locations based on pairs
-                antennaMap[c].CalculateAntinodes();
+                antennaMap[c].CalculateAntinodesWithHarmonics(mapTopLeft, mapBottomRight);
 
-                // Count pairs and add to total
                 foreach (IVector2 v in antennaMap[c].antinodes)
                 {
-                    // Check if antinode is inside the bounds of the map
-                    if (v.x < 0
-                        || v.x >= data[0].Length
-                        || v.y < 0
-                        || v.y >= data.Length)
-                    {
-                        continue;
-                    }
-
                     Console.WriteLine($"Antinode for {c}: {v.ToString()}");
 
                     if (matrix[v.x, v.y] == '.')
@@ -100,6 +93,7 @@ namespace aoc_2024_day_8
             antennas.Add(antenna);
         }
 
+        // Part 1
         public void CalculateAntinodes()
         {
             IVector2 v1, v2, delta;
@@ -117,11 +111,63 @@ namespace aoc_2024_day_8
                 }
             }
 
-            // Sort to display neatly in the console
             antennas.Sort();
             antinodes.Sort();
 
             Console.WriteLine("antinodes count: " + antinodes.Count);
+        }
+
+        // Part 2
+        public void CalculateAntinodesWithHarmonics(IVector2 mapTopLeft, IVector2 mapBottomRight)
+        {
+            antennas.Sort();
+
+            IVector2 v1, v2;
+            for (int i = 0; i < antennas.Count; ++i)
+            {
+                v1 = antennas[i];
+
+                for (int j = i + 1; j < antennas.Count; ++j)
+                {
+                    v2 = antennas[j];
+
+                    CalculateHarmonics(v2, mapBottomRight, new IVector2(v2 - v1));
+                }
+            }
+
+            antinodes.Sort();
+
+            Console.WriteLine("antinodes count: " + antinodes.Count);
+        }
+
+        private void CalculateHarmonics(IVector2 startingPoint, IVector2 mapBottomRight, IVector2 delta)
+        {
+            IVector2 harmonic = startingPoint;
+
+            while (harmonic.x <= mapBottomRight.x
+                && harmonic.y <= mapBottomRight.y
+                && harmonic.x >= 0
+                && harmonic.y >= 0)
+            {
+                antinodes.Add(new IVector2(harmonic));
+
+                // Traverse forwards
+                harmonic += delta;
+            }
+
+            // Start at other antenna
+            harmonic = startingPoint - delta;
+
+            while (harmonic.x <= mapBottomRight.x
+                && harmonic.y <= mapBottomRight.y
+                && harmonic.x >= 0
+                && harmonic.y >= 0)
+            {
+                antinodes.Add(new IVector2(harmonic));
+
+                // Traverse backwards
+                harmonic -= delta;
+            }
         }
 
         public override string ToString()
@@ -141,6 +187,10 @@ namespace aoc_2024_day_8
         public int x;
         public int y;
 
+        public IVector2(IVector2 other) {
+            this.x = other.x;
+            this.y = other.y;
+        }
         public IVector2(int x, int y)
         {
             this.x = x;
@@ -162,6 +212,26 @@ namespace aoc_2024_day_8
 
             return CompareTo(other) == 0;
         }
+
+        public static IVector2 operator -(IVector2 a) => new IVector2(-a.x, -a.y);
+        public static IVector2 operator +(IVector2 a, IVector2 b)
+        {
+            return new IVector2(a.x + b.x, a.y + b.y);
+        }
+        public static IVector2 operator -(IVector2 a, IVector2 b)
+        {
+            return new IVector2(a.x - b.x, a.y - b.y);
+        }
+
+        public static bool operator >(IVector2 a, IVector2 b)
+        {
+            return a.CompareTo(b) > 0;
+        }
+        public static bool operator <(IVector2 a, IVector2 b)
+        {
+            return a.CompareTo(b) * -1 > 0;
+        }
+
 
         public override string ToString()
         {
