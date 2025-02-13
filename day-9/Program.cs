@@ -10,7 +10,7 @@
 
             Console.WriteLine(diskmap);
 
-            string data = String.Empty;
+            string dataString = String.Empty;
 
             // parse diskmap into a string
             for (int i = 0, id = 0; i < diskmap.Length; i += 2, ++id)
@@ -27,40 +27,38 @@
                     freeSpace = int.Parse("" + diskmap[i + 1]);
 
                 for (int j = 0; j < filelength; ++j)
-                    data += "" + id;
+                    dataString += "" + id;
 
                 for (int j = 0; j < freeSpace; ++j)
-                    data += ".";
+                    dataString += ".";
             }
 
-            Console.WriteLine(data);
+            Console.WriteLine(dataString);
+
+            char[] data = dataString.ToCharArray();
 
             int endIndex = data.Length - 1;
-            string dataDefragged = String.Empty;
 
             // iterate through string
             for (int i = 0; i < endIndex; ++i)
             {
-                // take char from end and place in empty space at front
                 if (data[i] != '.')
                 {
-                    dataDefragged += data[i];
                     continue;
                 }
 
-                while (data[endIndex] == '.') {
+                while (data[endIndex] == '.')
+                {
                     --endIndex;
                 }
 
-                dataDefragged += data[endIndex--];
-            }
+                // take char from end and place in empty space at front
+                data[i] = data[endIndex];
+                data[endIndex] = '.';
+                --endIndex;
 
-            for (int i = endIndex; i < data.Length; ++i)
-            {
-                dataDefragged += '.';
+                Console.WriteLine(String.Join("", data));
             }
-
-            Console.WriteLine(dataDefragged);
         }
     }
 }
