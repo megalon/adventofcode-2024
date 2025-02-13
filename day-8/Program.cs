@@ -8,22 +8,21 @@
             string filepath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data.txt");
             string[] data = File.ReadAllLines(filepath);
 
-            Dictionary<char, int> antennaMap = new Dictionary<char, int>();
+            Dictionary<char, AntennaCollection> antennaMap = new Dictionary<char, AntennaCollection>();
 
             // Iterate through data and create a dictionary containing all the antenna locations
-            foreach (string line in data) {
-                Console.WriteLine(line);
+            for (int y = 0; y < data.Length; ++y) {
+                for (int x = 0; x < data[y].Length; ++x) {
+                    char c = data[y][x];
 
-                foreach (char c in line)
-                {
                     if (c == '.') continue;
 
                     if (antennaMap.ContainsKey(c))
                     {
-                        antennaMap[c] += 1;
+                        antennaMap[c].Add(new IVector2(x, y));
                     } else
                     {
-                        antennaMap[c] = 1;
+                        antennaMap[c] = new AntennaCollection(new IVector2(x, y));
                     }
                 }
             }
@@ -41,6 +40,38 @@
             }
 
             // Display total
+        }
+    }
+
+    internal class AntennaCollection
+    {
+        List<IVector2> antennas = new List<IVector2>();
+        List<IVector2> antinodes = new List<IVector2>();
+
+        public AntennaCollection(IVector2 antenna) {
+            Add(antenna);
+        }
+
+        public void Add(IVector2 antenna)
+        {
+            antennas.Add(antenna);
+        }
+
+        public void CalculateAntinodes()
+        {
+
+        }
+    }
+
+    internal class IVector2
+    {
+        public int x;
+        public int y;
+
+        public IVector2(int x, int y)
+        {
+            this.x = x;
+            this.y = y;
         }
     }
 }
