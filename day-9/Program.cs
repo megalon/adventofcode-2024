@@ -10,7 +10,7 @@ namespace aoc_2024_day_9
             string filepath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data.txt");
             string diskmap = File.ReadAllText(filepath).Trim();
 
-            Console.WriteLine(diskmap);
+            //Console.WriteLine(diskmap);
 
             int blockCount = diskmap.Sum(c => c - '0');
             int[] data = new int[blockCount];
@@ -56,6 +56,8 @@ namespace aoc_2024_day_9
                 {
                     --endIndex;
                 }
+
+                if (endIndex < i) break;
 
                 // take char from end and place in empty space at front
                 data[i] = data[endIndex];
