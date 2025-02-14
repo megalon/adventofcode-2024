@@ -1,4 +1,6 @@
-﻿namespace aoc_2024_day_9
+﻿using static System.Runtime.InteropServices.JavaScript.JSType;
+
+namespace aoc_2024_day_9
 {
     internal class Program
     {
@@ -8,7 +10,7 @@
             string filepath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data.txt");
             string diskmap = File.ReadAllText(filepath).Trim();
 
-            //Console.WriteLine(diskmap);
+            Console.WriteLine(diskmap);
 
             int blockCount = diskmap.Sum(c => c - '0');
             int[] data = new int[blockCount];
@@ -40,6 +42,8 @@
             }
 
             int endIndex = data.Length - 1;
+            
+            LogData(data);
 
             for (int i = 0; i < endIndex; ++i)
             {
@@ -58,24 +62,33 @@
                 data[endIndex] = -1;
                 --endIndex;
 
-                foreach (int d in data)
-                {
-                    Console.Write("" + (d == -1 ? "." : d));
-                }
-
-                Console.WriteLine();
+                LogData(data);
             }
 
             ulong total = 0;
 
             for (int i = 0; i < data.Length; ++i)
             {
-                if (data[i] == -1) break;
+                if (data[i] == -1) continue;
 
-                total += (ulong)data[i] * (ulong)i;
+                ulong val = (ulong)data[i] * (ulong)i;
+
+                //Console.WriteLine($"{data[i]} * {i} = {val}");
+
+                total += val;
             }
 
             Console.WriteLine("Total: " + total);
+        }
+
+        private static void LogData(int[] data)
+        {
+            foreach (int d in data)
+            {
+                Console.Write("" + (d == -1 ? "." : d));
+            }
+
+            Console.WriteLine();
         }
     }
 }
