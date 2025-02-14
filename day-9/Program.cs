@@ -41,9 +41,16 @@ namespace aoc_2024_day_9
                 cursor += freeSpace;
             }
 
-            int endIndex = data.Length - 1;
-            
+            Part1(data);
+
             LogData(data);
+
+            Console.WriteLine("Part 1 Total: " + Total(data));
+        }
+
+        private static void Part1(int[] data)
+        {
+            int endIndex = data.Length - 1;
 
             for (int i = 0; i < endIndex; ++i)
             {
@@ -64,9 +71,12 @@ namespace aoc_2024_day_9
                 data[endIndex] = -1;
                 --endIndex;
 
-                LogData(data);
+                //LogData(data);
             }
+        }
 
+        private static ulong Total(int[] data)
+        {
             ulong total = 0;
 
             for (int i = 0; i < data.Length; ++i)
@@ -80,7 +90,7 @@ namespace aoc_2024_day_9
                 total += val;
             }
 
-            Console.WriteLine("Total: " + total);
+            return total;
         }
 
         private static void LogData(int[] data)
