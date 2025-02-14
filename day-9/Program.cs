@@ -45,12 +45,19 @@ namespace aoc_2024_day_9
 
             Console.WriteLine("-- OUTPUT --");
 
-            //Part1(data);
+            // Copy data beacuse it will be modified in part 1
+            // and we need the original data for part 2
+            int[] dataCopy = new int[blockCount];
+            Array.Copy(data, dataCopy, blockCount);
 
-            Part2(data);
+            ulong totalPart1 = Part1(data);
+            ulong totalPart2 = Part2(dataCopy);
+
+            Console.WriteLine("Part 1 Total: " + totalPart1);
+            Console.WriteLine("Part 2 Total: " + totalPart2);
         }
 
-        private static void Part1(int[] data)
+        private static ulong Part1(int[] data)
         {
             int endIndex = data.Length - 1;
 
@@ -76,10 +83,13 @@ namespace aoc_2024_day_9
                 //LogData(data);
             }
 
-            Console.WriteLine("Part 1 Total: " + Total(data));
+            return Total(data);
         }
 
-        private static void Part2(int[] data)
+        // This works but in hindsight this was not a good way to approach this problem
+        // Tracking a bunch of indicies was tedious
+        // I would probably make a class for the blocks and iterate through those somehow
+        private static ulong Part2(int[] data)
         {
             int emptyLength, fileSize, endIndexId;
 
@@ -93,6 +103,7 @@ namespace aoc_2024_day_9
 
                 endIndexId = data[endIndex];
 
+                // Keep track of ids so we only test each id once
                 if (ids.Contains(endIndexId))
                     continue;
 
@@ -105,6 +116,7 @@ namespace aoc_2024_day_9
                     ++fileSize;
                 }
 
+                // Check if out of bounds of array
                 if (endIndex - fileSize < 0)
                     continue;
 
@@ -147,7 +159,7 @@ namespace aoc_2024_day_9
 
             LogData(data);
 
-            Console.WriteLine("Part 2 Total: " + Total(data));
+            return Total(data);
         }
 
         private static ulong Total(int[] data)
