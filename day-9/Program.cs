@@ -41,11 +41,13 @@ namespace aoc_2024_day_9
                 cursor += freeSpace;
             }
 
-            Part1(data);
-
             LogData(data);
 
-            Console.WriteLine("Part 1 Total: " + Total(data));
+            Console.WriteLine("-- OUTPUT --");
+
+            //Part1(data);
+
+            Part2(data);
         }
 
         private static void Part1(int[] data)
@@ -73,6 +75,79 @@ namespace aoc_2024_day_9
 
                 //LogData(data);
             }
+
+            Console.WriteLine("Part 1 Total: " + Total(data));
+        }
+
+        private static void Part2(int[] data)
+        {
+            int emptyLength, fileSize, endIndexId;
+
+            List<int> ids = new List<int>();
+
+            for (int endIndex = data.Length - 1; endIndex >= 0; --endIndex)
+            {
+                // Find a file (not empty space)
+                if (data[endIndex] == -1) 
+                    continue;
+
+                endIndexId = data[endIndex];
+
+                if (ids.Contains(endIndexId))
+                    continue;
+
+                ids.Add(endIndexId);
+
+                // Get file size
+                fileSize = 0;
+                while (endIndex - fileSize > 0 && data[endIndex - fileSize] == endIndexId)
+                {
+                    ++fileSize;
+                }
+
+                if (endIndex - fileSize < 0)
+                    continue;
+
+                // Search for empty space, starting from the front
+                for (int i = 0; i < endIndex; ++i)
+                {
+                    if (data[i] != -1)
+                        continue;
+
+                    // Get the amount of available empty space
+                    emptyLength = 0;
+                    while (data[i + emptyLength] == -1)
+                    {
+                        ++emptyLength;
+                    }
+
+                    // If file doesn't fit,
+                    // keep looking for an empty space that does
+                    if (fileSize > emptyLength)
+                    {
+                        i += emptyLength;
+                        continue;
+                    }
+
+                    // Move file to the empty space
+                    for (int f = 0; f < fileSize; ++f)
+                    {
+                        data[i + f] = endIndexId;
+                        data[endIndex - f] = -1;
+                    }
+
+                    //LogData(data);
+                    
+                    break;
+                }
+
+                // Need to add one because the loop subtracts one
+                endIndex -= fileSize - 1;
+            }
+
+            LogData(data);
+
+            Console.WriteLine("Part 2 Total: " + Total(data));
         }
 
         private static ulong Total(int[] data)
