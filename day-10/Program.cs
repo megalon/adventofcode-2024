@@ -4,7 +4,10 @@
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, World!");
+            string filepath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data.txt");
+            string data = File.ReadAllText(filepath);
+
+            Console.WriteLine(data);
         }
     }
 }
