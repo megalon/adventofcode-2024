@@ -18,40 +18,50 @@
                 {
                     Console.Write(data[y][x]);
 
-                    if (data[y][x] < '0' || data[y][x] > '9') continue;
+                    if (data[y][x] < '0' || data[y][x] > '9')
+                        continue;
 
-                    int val = int.Parse("" + data[y][x]);
-                    
-                    if (val != 0) continue;
-
-                    // Depth first search until we find trail end (9)
-                    // Probably recursive call here
-                    // findTrails(map, x, y)
-                    total += FindTrails(data, x, y);
-
-                    // Add number of trails to total
+                    map[x, y] = int.Parse("" + data[y][x]);
                 }
                 Console.WriteLine();
+            }
+
+            for (int y = 0; y < map.GetLength(1); ++y)
+            {
+                for (int x = 0; x < map.GetLength(0); ++x)
+                {
+                    int val = map[x, y];
+
+                    if (val != 0) continue;
+
+                    // Depth first search to find trail ends
+                    total += FindTrails(map, x, y);
+                }
             }
 
             Console.WriteLine("Total = " + total);
         }
 
-        private static int FindTrails(string[] data, int x, int y, char? previousVal = null)
+        private static int FindTrails(int[,] map, int x, int y, int? previousVal = null)
         {
-            if(x < 0 || y < 0 || x >= data[0].Length || y >= data.Length)
-            {
+            if(x < 0 || y < 0 || x >= map.GetLength(0) || y >= map.GetLength(1))
                 return 0;
+
+            if (map[x,y] < 0 || map[x, y] > 9)
+                return 0;
+
+            if (previousVal != null && map[x, y] != previousVal + 1) 
+                return 0;
+
+            if (map[x, y] == 9)
+            {
+                return 1;
             }
 
-            if (data[y][x] == '9') return 1;
-
-            if (previousVal != null && data[y][x] != previousVal + 1) return 0;
-
-            return FindTrails(data, x, y - 1, data[y][x]) // up
-                 + FindTrails(data, x, y + 1, data[y][x]) // down
-                 + FindTrails(data, x - 1, y, data[y][x]) // left
-                 + FindTrails(data, x + 1, y, data[y][x]); // right
+            return FindTrails(map, x, y - 1, map[x, y]) // up
+                 + FindTrails(map, x, y + 1, map[x, y]) // down
+                 + FindTrails(map, x - 1, y, map[x, y]) // left
+                 + FindTrails(map, x + 1, y, map[x, y]); // right
         }
     }
 }
