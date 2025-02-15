@@ -27,3 +27,39 @@ loop through all stones 25 times and apply rules to build new list
 Might not be able to modify the list while looping through it? At least not with a foreach loop
 
 maybe don't use recursion because we want to modify the whole list at once each iteration
+
+-----------------------------
+Part 2 Optimization for 75 iterations
+
+I didn't understand how to optimize this
+and started reading hints and how other people solved it (without looking at any code)
+
+I learned that the order does not matter
+and other people are simply keeping a map of all stones and how many times
+they were blinked at
+
+For example, num:blinks
+start       -> 1:0
+iteration 1 -> 2024:1
+iteration 2 -> 20:2, 24:2
+iteration 3 -> 2:3, 0:3, 2:3, 4:3
+iteration 4 -> 4048:4, 1:4, 4048:4, 8096:4
+iteration 5 -> 40:5, 48:5, 2024:5, 40:5, 48:5, 80:5, 96:5
+iteration 6 -> 4:6, 0:6, 4:6, 8:6, 20:6, 24:6, 4:6, 0:6, 4:6, 8:6, 8:6, 0:6, 9:6, 6:6
+etc
+
+But this method of keeping a list of all of them would run into the same issue where
+eventually we have an insane amount of stones that would slow things down
+
+Instead I think we need to use recursion to reach the end (75 iterations)
+then increment the stone counter by one
+
+We can also build a cache of values and their splits
+1:(2024, null), 2024:(20, 24), 20:(2, 0), 2:(4048, null)
+
+Hashmap<ulong, Splits>
+
+struct Splits {
+	ulong left,
+	ulong? right
+}
