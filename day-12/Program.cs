@@ -5,6 +5,10 @@
         static void Main(string[] args)
         {
             // read in data
+            string filepath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data.txt");
+            string data = File.ReadAllText(filepath);
+
+            Console.WriteLine(data);
 
             // convert string to char matrix array
 
