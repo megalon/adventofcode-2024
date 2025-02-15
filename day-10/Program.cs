@@ -55,6 +55,7 @@
 
             if (map[x, y] == 9)
             {
+                map[x, y] = -1; // Set to invalid value so we don't count it again
                 return 1;
             }
 
