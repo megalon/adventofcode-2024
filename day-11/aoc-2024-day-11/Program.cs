@@ -35,7 +35,6 @@ namespace aoc_2024_day_11
                 stopWatch.Stop();
                 PrintRuntime(stopWatch);
             }
-
         }
 
         private static void PrintRuntime(Stopwatch stopWatch)
@@ -118,7 +117,8 @@ namespace aoc_2024_day_11
             return total;
         }
 
-        private static Dictionary<ulong, Node> hashmap = new Dictionary<ulong, Node>();
+        // Create a map for what each stone splits into so we don't have to recalculate it
+        private static Dictionary<ulong, StoneInfo> hashmap = new Dictionary<ulong, StoneInfo>();
 
         private static ulong Part2Recursive(int depth, int targetDepth, ulong stone)
         {
@@ -134,13 +134,13 @@ namespace aoc_2024_day_11
 
             if (hashmap.ContainsKey(stone)) {
 
-                if (hashmap[stone].right == null)
+                if (hashmap[stone].node.right == null)
                 {
-                    return Part2Recursive(depth, targetDepth, hashmap[stone].left);
+                    return Part2Recursive(depth, targetDepth, hashmap[stone].node.left);
                 }
 
-                return Part2Recursive(depth, targetDepth, hashmap[stone].left)
-                    + Part2Recursive(depth, targetDepth, (ulong)hashmap[stone].right);
+                return Part2Recursive(depth, targetDepth, hashmap[stone].node.left)
+                    + Part2Recursive(depth, targetDepth, (ulong)hashmap[stone].node.right);
             }
 
             // Count digits
@@ -159,7 +159,7 @@ namespace aoc_2024_day_11
                 ulong left = ulong.Parse(s.Substring(0, numDigits / 2));
                 ulong right = ulong.Parse(s.Substring(numDigits / 2));
 
-                hashmap.Add(stone, new Node(left, right));
+                hashmap.Add(stone, new StoneInfo(new Node(left, right)));
 
                 return Part2Recursive(depth, targetDepth, left)
                     + Part2Recursive(depth, targetDepth, right);
@@ -168,6 +168,26 @@ namespace aoc_2024_day_11
             // other rules didn't apply
             // so multiply by 2024
             return Part2Recursive(depth, targetDepth, stone * 2024);
+        }
+
+        public struct StoneInfo
+        {
+            public Node node;
+
+            /// <summary>
+            /// key: depth
+            /// value: how many stones will get created from this depth up to the max
+            /// 
+            /// This prevents us from having to recurse through this number again
+            /// since we already know how many stones will be made
+            /// </summary>
+            public Dictionary<int, ulong> depthMap;
+
+            public StoneInfo(Node node)
+            {
+                this.node = node;
+                depthMap = new Dictionary<int, ulong>();
+            }
         }
 
         public struct Node
