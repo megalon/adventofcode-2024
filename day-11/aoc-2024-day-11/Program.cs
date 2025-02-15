@@ -27,11 +27,14 @@ namespace aoc_2024_day_11
             stopWatch.Stop();
             PrintRuntime(stopWatch);
 
-            stopWatch.Reset();
-            stopWatch.Start();
-            Console.WriteLine("Part 2 total: " + Part2(25, new List<ulong>(stones)));
-            stopWatch.Stop();
-            PrintRuntime(stopWatch);
+            for (int i = 25; i < 75; ++i)
+            {
+                stopWatch.Reset();
+                stopWatch.Start();
+                Console.WriteLine($"Part 2 total for {i} iterations: {Part2(i, new List<ulong>(stones))}");
+                stopWatch.Stop();
+                PrintRuntime(stopWatch);
+            }
 
         }
 
@@ -110,7 +113,6 @@ namespace aoc_2024_day_11
             for (int i = 0; i < stones.Count; ++i)
             {
                 total += Part2Recursive(0, n, stones[i]);
-                Console.WriteLine($"Finished processing stone {i} of {stones.Count} from original list");
             }
 
             return total;
