@@ -1,4 +1,4 @@
-namespace aoc_2024_day_10
+﻿namespace aoc_2024_day_10
 {
     internal class Program
     {
@@ -19,8 +19,8 @@ namespace aoc_2024_day_10
                     Console.Write(data[y][x]);
 
                     if (data[y][x] < '0' || data[y][x] > '9')
-                        continue;
-
+                        map[x, y] = -1;
+                    else
                         map[x, y] = int.Parse("" + data[y][x]);
                 }
                 Console.WriteLine();
