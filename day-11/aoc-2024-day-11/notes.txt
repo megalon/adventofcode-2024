@@ -1,0 +1,29 @@
+Stones in straight line
+Each stone has a number
+
+when you "blink" they change
+
+rules:
+- stones all change at the same time
+- 0 -> 1
+- even number of digits -> split into two stones
+  - left stone gets left half of digits
+  - right stone gets right half
+  - new numbers don't retain leading zeros
+  - 1000 -> 10|00 -> 10 and 0
+- if no other rules apply
+  - replace with a new stone that is old stone num * 2024
+- order is preserved. do not sort
+
+goal:
+how many stones will there be after "blinking" 25 times?
+
+implementation:
+
+stones = List of ulong
+
+loop through all stones 25 times and apply rules to build new list
+
+Might not be able to modify the list while looping through it? At least not with a foreach loop
+
+maybe don't use recursion because we want to modify the whole list at once each iteration
