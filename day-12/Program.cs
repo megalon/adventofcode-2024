@@ -35,8 +35,10 @@
                     
                     FindPlot(map, x, y, plantType, plot, dir);
 
+                    uint perimeter = FindPerimeter(plot);
+
                     Console.WriteLine($"Area for {plantType}: {plot.Count}");
-                    //Console.WriteLine($"Perimeter for {plantType}: {info.perimeter}");
+                    Console.WriteLine($"Perimeter for {plantType}: {perimeter}");
 
                     PrintMap(map);
                     Console.WriteLine();
@@ -83,43 +85,39 @@
             return;
         }
 
-        private static PlotInfo FindAreaAndPerimeterRecursive(char[,] map, int x, int y, char plantType)
+        private static uint FindPerimeter(List<IVector2> plot)
         {
-            PlotInfo info = new PlotInfo(1, 0);
             IVector2 delta = IVector2.UP;
+            uint perimeter = 0;
 
-            map[x, y] = '.';
-
-            foreach (Direction dir in Enum.GetValues(typeof(Direction))) 
+            foreach (IVector2 tile in plot)
             {
-                switch (dir)
+                foreach (Direction dir in Enum.GetValues(typeof(Direction)))
                 {
-                    case(Direction.UP):
-                        delta = IVector2.UP; break;
-                    case(Direction.RIGHT):
-                        delta = IVector2.RIGHT; break;
-                    case(Direction.DOWN):
-                        delta = IVector2.DOWN; break;
-                    case(Direction.LEFT):
-                        delta = IVector2.LEFT; break;
+                    switch (dir)
+                    {
+                        case (Direction.UP):
+                            delta = IVector2.UP; break;
+                        case (Direction.RIGHT):
+                            delta = IVector2.RIGHT; break;
+                        case (Direction.DOWN):
+                            delta = IVector2.DOWN; break;
+                        case (Direction.LEFT):
+                            delta = IVector2.LEFT; break;
+                    }
+
+                    IVector2 pos = new IVector2(tile.x + delta.x, tile.y + delta.y);
+
+                    if (plot.Where(v => v == pos).Any())
+                    {
+                        continue;
+                    }
+
+                    ++perimeter;
                 }
-
-                IVector2 pos = new IVector2(x + delta.x, y + delta.y);
-
-                if (   pos.x < 0 
-                    || pos.y < 0 
-                    || pos.x >= map.GetLength(0) 
-                    || pos.y >= map.GetLength(1) 
-                    || map[pos.x, pos.y] != plantType)
-                {
-                    ++info.perimeter;
-                    continue;
-                }
-
-                info += FindAreaAndPerimeterRecursive(map, pos.x, pos.y, plantType);
             }
 
-            return info;
+            return perimeter;
         }
 
         private enum Direction
@@ -128,23 +126,6 @@
             RIGHT,
             DOWN,
             LEFT
-        }
-
-        private struct PlotInfo
-        {
-            public uint area {  get; set; }
-            public uint perimeter { get; set; }
-
-            public PlotInfo(uint area, uint perimeter)
-            {
-                this.area = area;
-                this.perimeter = perimeter;
-            }
-
-            public static PlotInfo operator +(PlotInfo a, PlotInfo b)
-            {
-                return new PlotInfo(a.area + b.area, a.perimeter + b.perimeter);
-            }
         }
 
         private struct IVector2
@@ -161,6 +142,15 @@
             {
                 this.x = x;
                 this.y = y;
+            }
+
+            public static bool operator ==(IVector2 a, IVector2 b)
+            {
+                return a.x == b.x && a.y == b.y;
+            }
+            public static bool operator !=(IVector2 a, IVector2 b)
+            {
+                return a.x != b.x || a.y != b.y;
             }
         }
 
