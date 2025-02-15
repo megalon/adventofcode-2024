@@ -29,15 +29,58 @@
 
                     char plantType = map[x, y];
 
-                    PlotInfo info = FindAreaAndPerimeterRecursive(map, x, y, plantType);
+                    List<IVector2> plot = new List<IVector2>();
 
-                    Console.WriteLine($"Area for {plantType}: {info.area}");
-                    Console.WriteLine($"Perimeter for {plantType}: {info.perimeter}");
+                    Direction dir = x < map.GetLength(1) - 1 ? Direction.RIGHT : Direction.DOWN;
+                    
+                    FindPlot(map, x, y, plantType, plot, dir);
+
+                    Console.WriteLine($"Area for {plantType}: {plot.Count}");
+                    //Console.WriteLine($"Perimeter for {plantType}: {info.perimeter}");
 
                     PrintMap(map);
                     Console.WriteLine();
                 }
             }
+        }
+
+        private static void FindPlot(char[,] map, int x, int y, char plantType, List<IVector2> plot, Direction movementDir)
+        {
+            IVector2 delta = IVector2.UP;
+
+            plot.Add(new IVector2(x, y));
+
+            map[x, y] = '.';
+
+            foreach (Direction dir in Enum.GetValues(typeof(Direction)))
+            {
+                switch (dir)
+                {
+                    case (Direction.UP):
+                        delta = IVector2.UP; break;
+                    case (Direction.RIGHT):
+                        delta = IVector2.RIGHT; break;
+                    case (Direction.DOWN):
+                        delta = IVector2.DOWN; break;
+                    case (Direction.LEFT):
+                        delta = IVector2.LEFT; break;
+                }
+
+                IVector2 pos = new IVector2(x + delta.x, y + delta.y);
+
+                if (pos.x < 0
+                    || pos.y < 0
+                    || pos.x >= map.GetLength(0)
+                    || pos.y >= map.GetLength(1)
+                    || map[pos.x, pos.y] != plantType)
+                {
+                    continue;
+                }
+
+                FindPlot(map, pos.x, pos.y, plantType, plot, dir);
+            }
+
+            return;
         }
 
         private static PlotInfo FindAreaAndPerimeterRecursive(char[,] map, int x, int y, char plantType)
