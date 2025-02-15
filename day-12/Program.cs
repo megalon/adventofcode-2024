@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.Design;
-
-namespace aoc_2024_day_12
+﻿namespace aoc_2024_day_12
 {
     internal class Program
     {
@@ -29,14 +27,12 @@ namespace aoc_2024_day_12
                     if (map[x, y] < 'A' || map[x, y] > 'Z')
                         continue;
 
-                    // If we are at the right edge of the map, start by searching down
-                    Direction dir = x < map.GetLength(0) - 1 ? Direction.RIGHT : Direction.DOWN;
-
                     char plantType = map[x, y];
 
-                    uint area = FindAreaAndPerimeterRecursive(map, x, y, plantType, dir);
+                    PlotInfo info = FindAreaAndPerimeterRecursive(map, x, y, plantType);
 
-                    Console.WriteLine($"Area for {plantType}: {area}");
+                    Console.WriteLine($"Area for {plantType}: {info.area}");
+                    Console.WriteLine($"Perimeter for {plantType}: {info.perimeter}");
 
                     PrintMap(map);
                     Console.WriteLine();
@@ -44,34 +40,85 @@ namespace aoc_2024_day_12
             }
         }
 
-        // return count and area
-        private static uint FindAreaAndPerimeterRecursive(char[,] map, int x, int y, char plantType, Direction dir)
+        private static PlotInfo FindAreaAndPerimeterRecursive(char[,] map, int x, int y, char plantType)
         {
-            // if tile is not valid
-            if (x < 0 || y < 0 || x >= map.GetLength(0) || y >= map.GetLength(1))
-                return 0;
-
-            if (map[x, y] != plantType)
-                return 0;
+            PlotInfo info = new PlotInfo(1, 0);
+            IVector2 delta = IVector2.UP;
 
             map[x, y] = '.';
 
-            uint area = 0;
+            foreach (Direction dir in Enum.GetValues(typeof(Direction))) 
+            {
+                switch (dir)
+                {
+                    case(Direction.UP):
+                        delta = IVector2.UP; break;
+                    case(Direction.RIGHT):
+                        delta = IVector2.RIGHT; break;
+                    case(Direction.DOWN):
+                        delta = IVector2.DOWN; break;
+                    case(Direction.LEFT):
+                        delta = IVector2.LEFT; break;
+                }
 
-            area += FindAreaAndPerimeterRecursive(map, x, y - 1, plantType, Direction.UP);
-            area += FindAreaAndPerimeterRecursive(map, x, y + 1, plantType, Direction.DOWN);
-            area += FindAreaAndPerimeterRecursive(map, x - 1, y, plantType, Direction.LEFT);
-            area += FindAreaAndPerimeterRecursive(map, x + 1, y, plantType, Direction.RIGHT);
+                IVector2 pos = new IVector2(x + delta.x, y + delta.y);
 
-            return area + 1;
+                if (   pos.x < 0 
+                    || pos.y < 0 
+                    || pos.x >= map.GetLength(0) 
+                    || pos.y >= map.GetLength(1) 
+                    || map[pos.x, pos.y] != plantType)
+                {
+                    ++info.perimeter;
+                    continue;
+                }
+
+                info += FindAreaAndPerimeterRecursive(map, pos.x, pos.y, plantType);
+            }
+
+            return info;
         }
 
         private enum Direction
         {
             UP,
-            DOWN,
-            LEFT,
             RIGHT,
+            DOWN,
+            LEFT
+        }
+
+        private struct PlotInfo
+        {
+            public uint area {  get; set; }
+            public uint perimeter { get; set; }
+
+            public PlotInfo(uint area, uint perimeter)
+            {
+                this.area = area;
+                this.perimeter = perimeter;
+            }
+
+            public static PlotInfo operator +(PlotInfo a, PlotInfo b)
+            {
+                return new PlotInfo(a.area + b.area, a.perimeter + b.perimeter);
+            }
+        }
+
+        private struct IVector2
+        {
+            public int x { get; }
+            public int y { get; }
+
+            public static readonly IVector2 UP = new IVector2(0, -1);
+            public static readonly IVector2 DOWN = new IVector2(0, 1);
+            public static readonly IVector2 LEFT = new IVector2(-1, 0);
+            public static readonly IVector2 RIGHT = new IVector2(1, 0);
+
+            public IVector2(int x, int y)
+            {
+                this.x = x;
+                this.y = y;
+            }
         }
 
         private static void PrintMap(char[,] map)
