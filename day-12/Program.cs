@@ -1,4 +1,6 @@
-﻿namespace aoc_2024_day_12
+﻿using System.Reflection.Metadata;
+
+namespace aoc_2024_day_12
 {
     internal class Program
     {
@@ -18,6 +20,8 @@
                     map[x, y] = data[y][x];
                 }
             }
+
+            uint totalPrice = 0;
 
             // iterate through matrix
             for (int y = 0; y < map.GetLength(1); ++y)
@@ -40,10 +44,14 @@
                     Console.WriteLine($"Area for {plantType}: {plot.Count}");
                     Console.WriteLine($"Perimeter for {plantType}: {perimeter}");
 
-                    PrintMap(map);
+                    totalPrice += ((uint)plot.Count * perimeter);
+
+                    //PrintMap(map);
                     Console.WriteLine();
                 }
             }
+
+            Console.WriteLine($"Total price of fence: {totalPrice}");
         }
 
         private static void FindPlot(char[,] map, int x, int y, char plantType, List<IVector2> plot, Direction movementDir)
