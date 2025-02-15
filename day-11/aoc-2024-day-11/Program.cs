@@ -1,4 +1,6 @@
-﻿namespace aoc_2024_day_11
+﻿using System.Text.RegularExpressions;
+
+namespace aoc_2024_day_11
 {
     internal class Program
     {
@@ -11,6 +13,11 @@
             Console.WriteLine(data);
 
             // build a list of ulong
+            List<ulong> stones = new List<ulong>();
+
+            foreach (Match match in Regex.Matches(data, @"\d+")) {
+                stones.Add(ulong.Parse(match.Value));
+            }
 
             // loop 25 times
             {
