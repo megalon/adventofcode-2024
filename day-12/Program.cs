@@ -6,11 +6,20 @@
         {
             // read in data
             string filepath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data.txt");
-            string data = File.ReadAllText(filepath);
+            string[] data = File.ReadAllLines(filepath);
 
-            Console.WriteLine(data);
+            char[,] map = new char[data[0].Length, data.Length];
 
             // convert string to char matrix array
+            for (int y = 0; y < map.GetLength(1); ++y)
+            {
+                for (int x = 0; x < map.GetLength(0); ++x)
+                {
+                    map[x, y] = data[y][x];
+                    Console.Write(map[x, y]);
+                }
+                Console.WriteLine();
+            }
 
             // iterate through matrix
             {
