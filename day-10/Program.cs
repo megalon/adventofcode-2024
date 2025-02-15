@@ -9,7 +9,7 @@
 
             int[,] map = new int[data[0].Length, data.Length];
 
-            int total = 0;
+            ulong total = 0;
 
             // Loop through map and find trail heads (0)
             for (int y = 0; y < data.Length; ++y)
@@ -42,7 +42,7 @@
             Console.WriteLine("Total = " + total);
         }
 
-        private static int FindTrails(int[,] map, int x, int y, List<IVector2> trailEnds, int? previousVal = null)
+        private static ulong FindTrails(int[,] map, int x, int y, List<IVector2> trailEnds, int? previousVal = null)
         {
             if (x < 0 || y < 0 || x >= map.GetLength(0) || y >= map.GetLength(1))
                 return 0;
