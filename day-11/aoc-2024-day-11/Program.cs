@@ -19,7 +19,7 @@ namespace aoc_2024_day_11
                 stones.Add(ulong.Parse(match.Value));
             }
 
-            // loop 25 times
+            // "blink" 25 times
             for (int i = 0; i < 25; ++i)
             {
                 // iterate through stones list and check rules
