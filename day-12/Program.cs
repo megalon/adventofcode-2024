@@ -64,17 +64,7 @@ namespace aoc_2024_day_12
 
             foreach (Direction dir in Enum.GetValues(typeof(Direction)))
             {
-                switch (dir)
-                {
-                    case (Direction.UP):
-                        delta = IVector2.UP; break;
-                    case (Direction.RIGHT):
-                        delta = IVector2.RIGHT; break;
-                    case (Direction.DOWN):
-                        delta = IVector2.DOWN; break;
-                    case (Direction.LEFT):
-                        delta = IVector2.LEFT; break;
-                }
+                delta = DirectionToIVector2(dir);
 
                 IVector2 pos = new IVector2(x + delta.x, y + delta.y);
 
@@ -102,17 +92,7 @@ namespace aoc_2024_day_12
             {
                 foreach (Direction dir in Enum.GetValues(typeof(Direction)))
                 {
-                    switch (dir)
-                    {
-                        case (Direction.UP):
-                            delta = IVector2.UP; break;
-                        case (Direction.RIGHT):
-                            delta = IVector2.RIGHT; break;
-                        case (Direction.DOWN):
-                            delta = IVector2.DOWN; break;
-                        case (Direction.LEFT):
-                            delta = IVector2.LEFT; break;
-                    }
+                    delta = DirectionToIVector2(dir);
 
                     IVector2 pos = new IVector2(tile.x + delta.x, tile.y + delta.y);
 
@@ -126,6 +106,21 @@ namespace aoc_2024_day_12
             }
 
             return perimeter;
+        }
+
+        private static IVector2 DirectionToIVector2(Direction dir)
+        {
+            switch (dir)
+            {
+                case (Direction.RIGHT):
+                    return IVector2.RIGHT;
+                case (Direction.DOWN):
+                    return IVector2.DOWN;
+                case (Direction.LEFT):
+                    return IVector2.LEFT;
+            }
+
+            return IVector2.UP;
         }
 
         private enum Direction
