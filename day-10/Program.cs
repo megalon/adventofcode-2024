@@ -9,7 +9,7 @@
 
             int[,] map = new int[data[0].Length, data.Length];
 
-            ulong total = 0;
+            ulong totalPart1 = 0, totalPart2 = 0;
 
             // Loop through map and find trail heads (0)
             for (int y = 0; y < data.Length; ++y)
@@ -35,22 +35,18 @@
                     if (val != 0) continue;
 
                     // Depth first search to find trail ends
-                    total += FindTrails(map, x, y, new List<IVector2>());
+                    totalPart1 += FindTrailsPart1(map, x, y, new List<IVector2>());
+                    totalPart2 += FindTrailsPart2(map, x, y);
                 }
             }
 
-            Console.WriteLine("Total = " + total);
+            Console.WriteLine("Part 1 total = " + totalPart1);
+            Console.WriteLine("Part 2 total = " + totalPart2);
         }
 
-        private static ulong FindTrails(int[,] map, int x, int y, List<IVector2> trailEnds, int? previousVal = null)
+        private static ulong FindTrailsPart1(int[,] map, int x, int y, List<IVector2> trailEnds, int? previousVal = null)
         {
-            if (x < 0 || y < 0 || x >= map.GetLength(0) || y >= map.GetLength(1))
-                return 0;
-
-            if (map[x, y] < 0 || map[x, y] > 9)
-                return 0;
-
-            if (previousVal != null && map[x, y] != previousVal + 1)
+            if (!IsNextStepInTrail(map, x, y, previousVal))
                 return 0;
 
             if (map[x, y] == 9)
@@ -65,10 +61,40 @@
                 return 1;
             }
 
-            return FindTrails(map, x, y - 1, trailEnds, map[x, y]) // up
-                 + FindTrails(map, x, y + 1, trailEnds, map[x, y]) // down
-                 + FindTrails(map, x - 1, y, trailEnds, map[x, y]) // left
-                 + FindTrails(map, x + 1, y, trailEnds, map[x, y]); // right
+            return FindTrailsPart1(map, x, y - 1, trailEnds, map[x, y]) // up
+                 + FindTrailsPart1(map, x, y + 1, trailEnds, map[x, y]) // down
+                 + FindTrailsPart1(map, x - 1, y, trailEnds, map[x, y]) // left
+                 + FindTrailsPart1(map, x + 1, y, trailEnds, map[x, y]); // right
+        }
+
+        private static ulong FindTrailsPart2(int[,] map, int x, int y, int? previousVal = null)
+        {
+            if (!IsNextStepInTrail(map, x, y, previousVal))
+                return 0;
+
+            if (map[x, y] == 9)
+            {
+                return 1;
+            }
+
+            return FindTrailsPart2(map, x, y - 1, map[x, y])  // up
+                 + FindTrailsPart2(map, x, y + 1, map[x, y])  // down
+                 + FindTrailsPart2(map, x - 1, y, map[x, y])  // left
+                 + FindTrailsPart2(map, x + 1, y, map[x, y]); // right
+        }
+
+        private static bool IsNextStepInTrail(int[,] map, int x, int y, int? previousVal = null)
+        {
+            if (x < 0 || y < 0 || x >= map.GetLength(0) || y >= map.GetLength(1))
+                return false;
+
+            if (map[x, y] < 0 || map[x, y] > 9)
+                return false;
+
+            if (previousVal != null && map[x, y] != previousVal + 1)
+                return false;
+
+            return true;
         }
 
         private class IVector2
