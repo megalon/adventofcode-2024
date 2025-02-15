@@ -27,7 +27,7 @@ namespace aoc_2024_day_11
             stopWatch.Stop();
             PrintRuntime(stopWatch);
 
-            for (int i = 25; i < 75; ++i)
+            for (int i = 25; i <= 75; ++i)
             {
                 stopWatch.Reset();
                 stopWatch.Start();
@@ -108,6 +108,9 @@ namespace aoc_2024_day_11
         {
             ulong total = 0;
 
+            hashmap.Clear();
+            hashmap.Add(0, new StoneInfo(new Node(1, null)));
+
             // Recursive call
             for (int i = 0; i < stones.Count; ++i)
             {
@@ -129,45 +132,64 @@ namespace aoc_2024_day_11
 
             ++depth;
 
-            if (stone == 0)
-                return Part2Recursive(depth, targetDepth, 1);
+            ulong result = 0;
 
-            if (hashmap.ContainsKey(stone)) {
+            if (hashmap.ContainsKey(stone))
+            {
+                if (hashmap[stone].depthMap.ContainsKey(depth))
+                {
+                    return hashmap[stone].depthMap[depth];
+                }
 
                 if (hashmap[stone].node.right == null)
                 {
-                    return Part2Recursive(depth, targetDepth, hashmap[stone].node.left);
+                    result = Part2Recursive(depth, targetDepth, hashmap[stone].node.left);
+                } else
+                {
+                    result = Part2Recursive(depth, targetDepth, hashmap[stone].node.left)
+                        + Part2Recursive(depth, targetDepth, (ulong)hashmap[stone].node.right);
+                }
+            }
+
+            if (result == 0)
+            {
+                // Count digits
+                int numDigits = CountDigits(stone);
+
+                // if even number of digits
+                if (numDigits % 2 == 0)
+                {
+                    // split stone in half
+                    // left digits go to left stone
+                    // right digits go to right stone
+
+                    // Convert to a string and split so we can parse the string to a ulong
+                    string s = stone.ToString();
+
+                    ulong left = ulong.Parse(s.Substring(0, numDigits / 2));
+                    ulong right = ulong.Parse(s.Substring(numDigits / 2));
+
+                    hashmap.Add(stone, new StoneInfo(new Node(left, right)));
+
+                    result = Part2Recursive(depth, targetDepth, left)
+                        + Part2Recursive(depth, targetDepth, right);
+                }
+            }
+
+            if (result == 0)
+            {
+                // other rules didn't apply
+                // so multiply by 2024
+                if (!hashmap.ContainsKey(stone))
+                {
+                    hashmap.Add(stone, new StoneInfo(new Node(stone * 2024, null)));
                 }
 
-                return Part2Recursive(depth, targetDepth, hashmap[stone].node.left)
-                    + Part2Recursive(depth, targetDepth, (ulong)hashmap[stone].node.right);
+                result = Part2Recursive(depth, targetDepth, stone * 2024);
             }
 
-            // Count digits
-            int numDigits = CountDigits(stone);
-
-            // if even number of digits
-            if (numDigits % 2 == 0)
-            {
-                // split stone in half
-                // left digits go to left stone
-                // right digits go to right stone
-
-                // Convert to a string and split so we can parse the string to a ulong
-                string s = stone.ToString();
-
-                ulong left = ulong.Parse(s.Substring(0, numDigits / 2));
-                ulong right = ulong.Parse(s.Substring(numDigits / 2));
-
-                hashmap.Add(stone, new StoneInfo(new Node(left, right)));
-
-                return Part2Recursive(depth, targetDepth, left)
-                    + Part2Recursive(depth, targetDepth, right);
-            }
-
-            // other rules didn't apply
-            // so multiply by 2024
-            return Part2Recursive(depth, targetDepth, stone * 2024);
+            hashmap[stone].depthMap.TryAdd(depth, result);
+            return result;
         }
 
         public struct StoneInfo
