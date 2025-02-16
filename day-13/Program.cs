@@ -13,16 +13,19 @@ namespace aoc_2024_day_13
             string data = File.ReadAllText(filepath);
 
             ulong totalCostPart1 = 0;
+            ulong totalCostPart2 = 0;
 
             foreach (Match match in Regex.Matches(data, @"(Button A: X\+\d+, Y\+\d+)\s+(Button B: X\+\d+, Y\+\d+)\s+(Prize: X=\d+, Y=\d+)"))
             {
-                UIVector2 A = VectorFromInputString(match.Groups[1].Value);
-                UIVector2 B = VectorFromInputString(match.Groups[2].Value);
-                UIVector2 T = VectorFromInputString(match.Groups[3].Value);
+                ULVector2 A = VectorFromInputString(match.Groups[1].Value);
+                ULVector2 B = VectorFromInputString(match.Groups[2].Value);
+                ULVector2 T = VectorFromInputString(match.Groups[3].Value);
 
                 Console.WriteLine(T.ToString());
 
-                totalCostPart1 += GetTokenCost(A, B, T, 100);
+                //totalCostPart1 += GetTokenCostPart1(A, B, T, 100);
+                totalCostPart1 += GetTokenCostPart2(A, B, T);
+                //totalCostPart2 += GetTokenCostPart2(A, B, new ULVector2(T.x + 10000000000000, T.y + 10000000000000));
 
                 Console.WriteLine();
             }
@@ -30,9 +33,32 @@ namespace aoc_2024_day_13
             Console.WriteLine("Total cost part 1: " + totalCostPart1);
         }
 
-        private static ulong GetTokenCost(UIVector2 A, UIVector2 B, UIVector2 T, ulong maxPresses)
+        private static ulong GetTokenCostPart2(ULVector2 A, ULVector2 B, ULVector2 T)
         {
-            UIVector2 result = new UIVector2(0, 0);
+            // 80 * 94 + 40 * 22 = 8400
+            //      94 +      22 = 116
+
+            // Max value 
+
+            // The max number of button presses to check is
+            // how many presses it would take for the button
+            // that adds less to total up to a value greater than the target
+            decimal xMax = Math.Ceiling(Math.Max(T.x / A.x, T.x / B.x));
+            decimal yMax = Math.Ceiling(Math.Max(T.y / A.y, T.y / B.y));
+
+            Part2Recursive(A, B, 0, 10000, T);
+
+            return 0;
+        }
+
+        private static ulong Part2Recursive(ULVector2 A, ULVector2 B, decimal countA, decimal countB, ULVector2 T)
+        {
+            return 0;
+        }
+
+        private static ulong GetTokenCostPart1(ULVector2 A, ULVector2 B, ULVector2 T, ulong maxPresses)
+        {
+            ULVector2 result = new ULVector2(0, 0);
             
             // We want as few A presses as possible, so start at 0
             // We want as many B presses as possible, so start at max 
@@ -40,7 +66,7 @@ namespace aoc_2024_day_13
             {
                 for (ulong countB = maxPresses; countB > 0; --countB)
                 {
-                    result = new UIVector2(
+                    result = new ULVector2(
                         A.x * countA + B.x * countB,
                         A.y * countA + B.y * countB
                     );
@@ -58,28 +84,28 @@ namespace aoc_2024_day_13
             return 0;
         }
 
-        private static UIVector2 VectorFromInputString(string input)
+        private static ULVector2 VectorFromInputString(string input)
         {
             Match match = Regex.Match(input, @"\D+(\d+)\D+(\d+)");
 
-            return new UIVector2(ulong.Parse(match.Groups[1].Value), ulong.Parse(match.Groups[2].Value));
+            return new ULVector2(decimal.Parse(match.Groups[1].Value), decimal.Parse(match.Groups[2].Value));
         }
 
-        private struct UIVector2
+        private struct ULVector2
         {
-            public ulong x { get; }
-            public ulong y { get; }
+            public decimal x { get; }
+            public decimal y { get; }
 
-            public UIVector2(ulong x, ulong y)
+            public ULVector2(decimal x, decimal y)
             {
                 this.x = x;
                 this.y = y;
             }
-            public static bool operator ==(UIVector2 left, UIVector2 right)
+            public static bool operator ==(ULVector2 left, ULVector2 right)
             {
                 return left.x == right.x && left.y == right.y;
             }
-            public static bool operator !=(UIVector2 left, UIVector2 right)
+            public static bool operator !=(ULVector2 left, ULVector2 right)
             {
                 return left.x != right.x || left.y != right.y;
             }
