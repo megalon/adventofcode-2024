@@ -10,21 +10,12 @@ namespace aoc_2024_day_13
             string filepath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data.txt");
             string data = File.ReadAllText(filepath);
 
-            // Button A: X + 94, Y + 34
-            // Button B: X + 22, Y + 67
-            // Prize: X = 8400, Y = 5400
-
             foreach (Match match in Regex.Matches(data, @"(Button A: X\+\d+, Y\+\d+)\s+(Button B: X\+\d+, Y\+\d+)\s+(Prize: X=\d+, Y=\d+)"))
             {
-                ClawMachine machine = new ClawMachine(
-                    VectorFromInputString(match.Groups[1].Value),
-                    VectorFromInputString(match.Groups[2].Value),
-                    VectorFromInputString(match.Groups[3].Value)
-                );
-            }
+                IVector2 A = VectorFromInputString(match.Groups[1].Value);
+                IVector2 B = VectorFromInputString(match.Groups[2].Value);
+                IVector2 T = VectorFromInputString(match.Groups[3].Value);
 
-            // iterate over claw machines
-            {
                 // iterate, adding each time
                 // max 100 iterations
                 {
@@ -44,19 +35,6 @@ namespace aoc_2024_day_13
             Match match = Regex.Match(input, @"\D+(\d+)\D+(\d+)");
 
             return new IVector2(int.Parse(match.Groups[1].Value), int.Parse(match.Groups[2].Value));
-        }
-
-        private class ClawMachine
-        {
-            public IVector2 buttonA { get; }
-            public IVector2 buttonB { get; }
-            public IVector2 target { get; }
-            public ClawMachine(IVector2 buttonA, IVector2 buttonB, IVector2 target)
-            {
-                this.buttonA = buttonA;
-                this.buttonB = buttonB;
-                this.target = target;
-            }
         }
 
         private struct IVector2
