@@ -1,0 +1,85 @@
+claw machines
+each button moves X and Y
+Button A = (x, y)
+Button B = (x, y)
+Target T = (x, y)
+
+A = 3 tokens
+B = 1 token
+
+Goal:
+find cheapest combo to arrive at goal
+T == A * n1 + B * n2
+
+NOTE:
+We need to track X and Y together When one increases the other does to because they are tied to each button
+
+ex
+t = 22
+a = 3
+b = 5
+n1 = ?
+n2 = ?
+
+3 * n1 + 5 * n2 = 22
+3 * 4 + 5 * 2 = 22
+12 + 10 = 22
+
+approaches:
+straight modulo isn't going to work
+ex: it would tell us if the number is divisible by a,
+but we'd have to subtract out b * n2
+like 40 % 5 -> 0
+but that would only help if we were doing 
+T == A * B
+
+what if we divide
+t / a = 7.333333
+does n1 have to be less than that number?
+
+lets see
+
+t = 100
+a = 20
+b = 10
+
+i guess so
+
+
+// Loop maximums
+// This is the max number of times we can add this
+// number to get a number smaller than the target t
+// It also has to be less than 100 by the puzzle rules
+double maxA = Math.Min(Math.Floor(t.x / a.x), Math.Floor(t.y / a.y))
+double maxB = Math.Min(Math.Floor(t.x / b.x), Math.Floor(t.y / b.y))
+
+double maxCount = Math.Min(100, Math.Min(maxA, maxB))
+
+// B is cheaper so we want as many B as possible
+for (int countB = maxCount; countB > 0; --countB) {
+	
+}
+
+// Example from puzzle
+Button A: X+94, Y+34
+Button B: X+22, Y+67
+Prize: X=8400, Y=5400
+
+A: 94, 34
+B: 22, 67
+T: 8400, 5400
+
+for (int count = maxCount; count >= 0; --count) {
+	int divisorB = (22 * count);
+
+	// if not divisible ignore
+	if (8400 % divisorB != 0)
+		continue;
+
+	int divisorA = (94 * (count - maxCount));
+
+	if (8400 % divisorA != 0)
+		continue;
+
+	// I guess that's it we found a match for x?
+}
