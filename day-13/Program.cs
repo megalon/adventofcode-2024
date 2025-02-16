@@ -1,4 +1,6 @@
-﻿namespace aoc_2024_day_13
+﻿using System.Text.RegularExpressions;
+
+namespace aoc_2024_day_13
 {
     internal class Program
     {
@@ -8,10 +10,18 @@
             string filepath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data.txt");
             string data = File.ReadAllText(filepath);
 
-            Console.WriteLine(data);
+            // Button A: X + 94, Y + 34
+            // Button B: X + 22, Y + 67
+            // Prize: X = 8400, Y = 5400
 
             // parse into some kind of collection
-
+            foreach (Match match in Regex.Matches(data, @"(Button A: X\+\d+, Y\+\d+)\s+(Button B: X\+\d+, Y\+\d+)\s+(Prize: X=\d+, Y=\d+)"))
+            {
+                Console.WriteLine("A: " + match.Groups[1].Value);
+                Console.WriteLine("B: " + match.Groups[2].Value);
+                Console.WriteLine("T: " + match.Groups[3].Value);
+                Console.WriteLine();
+            }
 
             // iterate over claw machines
             {
