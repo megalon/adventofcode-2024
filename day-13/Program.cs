@@ -14,13 +14,13 @@ namespace aoc_2024_day_13
             // Button B: X + 22, Y + 67
             // Prize: X = 8400, Y = 5400
 
-            // parse into some kind of collection
             foreach (Match match in Regex.Matches(data, @"(Button A: X\+\d+, Y\+\d+)\s+(Button B: X\+\d+, Y\+\d+)\s+(Prize: X=\d+, Y=\d+)"))
             {
-                Console.WriteLine("A: " + match.Groups[1].Value);
-                Console.WriteLine("B: " + match.Groups[2].Value);
-                Console.WriteLine("T: " + match.Groups[3].Value);
-                Console.WriteLine();
+                ClawMachine machine = new ClawMachine(
+                    VectorFromInputString(match.Groups[1].Value),
+                    VectorFromInputString(match.Groups[2].Value),
+                    VectorFromInputString(match.Groups[3].Value)
+                );
             }
 
             // iterate over claw machines
@@ -39,12 +39,36 @@ namespace aoc_2024_day_13
             // print total cost
         }
 
-        // class ClawMachine
-            // IVector2 buttonA
-            // IVector2 buttonB
-            // IVector2 target
+        private static IVector2 VectorFromInputString(string input)
+        {
+            Match match = Regex.Match(input, @"\D+(\d+)\D+(\d+)");
 
-        // class IVector2
-            // x, y
+            return new IVector2(int.Parse(match.Groups[1].Value), int.Parse(match.Groups[2].Value));
+        }
+
+        private class ClawMachine
+        {
+            public IVector2 buttonA { get; }
+            public IVector2 buttonB { get; }
+            public IVector2 target { get; }
+            public ClawMachine(IVector2 buttonA, IVector2 buttonB, IVector2 target)
+            {
+                this.buttonA = buttonA;
+                this.buttonB = buttonB;
+                this.target = target;
+            }
+        }
+
+        private struct IVector2
+        {
+            public int x { get; }
+            public int y { get; }
+
+            public IVector2(int x, int y)
+            {
+                this.x = x;
+                this.y = y;
+            }
+        }
     }
 }
