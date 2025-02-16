@@ -27,7 +27,6 @@ namespace aoc_2024_day_13
                 Console.WriteLine();
             }
 
-            // print total cost
             Console.WriteLine("Total cost: " +  totalCost);
         }
 
@@ -35,11 +34,11 @@ namespace aoc_2024_day_13
         {
             IVector2 result = new IVector2(0, 0);
 
-            // max 100 button presses
+            // the rules state max 100 button presses
             int maxCount = 100;
             
             // We want as few A presses as possible, so start at 0
-            // We want as many B presses as possible, so start at max count 
+            // We want as many B presses as possible, so start at max 
             for (int countA = 0; countA < maxCount; ++countA)
             {
                 for (int countB = maxCount; countB > 0; --countB)
@@ -52,7 +51,6 @@ namespace aoc_2024_day_13
                     if (T == result)
                     {
                         Console.WriteLine("****** MATCH ******");
-                        //Console.WriteLine($"{result.ToString()} == {T.ToString()} -> {result == T}");
                         Console.Write($"{A.ToString()} * {countA} + {B.ToString()} * {countB} = {result.ToString()}");
 
                         return countA * 3 + countB;
