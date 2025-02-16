@@ -12,38 +12,35 @@ namespace aoc_2024_day_13
             string filepath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data.txt");
             string data = File.ReadAllText(filepath);
 
-            int totalCost = 0;
+            uint totalCostPart1 = 0;
 
             foreach (Match match in Regex.Matches(data, @"(Button A: X\+\d+, Y\+\d+)\s+(Button B: X\+\d+, Y\+\d+)\s+(Prize: X=\d+, Y=\d+)"))
             {
-                IVector2 A = VectorFromInputString(match.Groups[1].Value);
-                IVector2 B = VectorFromInputString(match.Groups[2].Value);
-                IVector2 T = VectorFromInputString(match.Groups[3].Value);
+                UIVector2 A = VectorFromInputString(match.Groups[1].Value);
+                UIVector2 B = VectorFromInputString(match.Groups[2].Value);
+                UIVector2 T = VectorFromInputString(match.Groups[3].Value);
 
                 Console.WriteLine(T.ToString());
 
-                totalCost += GetTokenCost(A, B, T);
+                totalCostPart1 += GetTokenCost(A, B, T, 100);
 
                 Console.WriteLine();
             }
 
-            Console.WriteLine("Total cost: " +  totalCost);
+            Console.WriteLine("Total cost part 1: " + totalCostPart1);
         }
 
-        private static int GetTokenCost(IVector2 A, IVector2 B, IVector2 T)
+        private static uint GetTokenCost(UIVector2 A, UIVector2 B, UIVector2 T, uint maxPresses)
         {
-            IVector2 result = new IVector2(0, 0);
-
-            // the rules state max 100 button presses
-            int maxCount = 100;
+            UIVector2 result = new UIVector2(0, 0);
             
             // We want as few A presses as possible, so start at 0
             // We want as many B presses as possible, so start at max 
-            for (int countA = 0; countA < maxCount; ++countA)
+            for (uint countA = 0; countA < maxPresses; ++countA)
             {
-                for (int countB = maxCount; countB > 0; --countB)
+                for (uint countB = maxPresses; countB > 0; --countB)
                 {
-                    result = new IVector2(
+                    result = new UIVector2(
                         A.x * countA + B.x * countB,
                         A.y * countA + B.y * countB
                     );
@@ -61,28 +58,28 @@ namespace aoc_2024_day_13
             return 0;
         }
 
-        private static IVector2 VectorFromInputString(string input)
+        private static UIVector2 VectorFromInputString(string input)
         {
             Match match = Regex.Match(input, @"\D+(\d+)\D+(\d+)");
 
-            return new IVector2(int.Parse(match.Groups[1].Value), int.Parse(match.Groups[2].Value));
+            return new UIVector2(uint.Parse(match.Groups[1].Value), uint.Parse(match.Groups[2].Value));
         }
 
-        private struct IVector2
+        private struct UIVector2
         {
-            public int x { get; }
-            public int y { get; }
+            public uint x { get; }
+            public uint y { get; }
 
-            public IVector2(int x, int y)
+            public UIVector2(uint x, uint y)
             {
                 this.x = x;
                 this.y = y;
             }
-            public static bool operator ==(IVector2 left, IVector2 right)
+            public static bool operator ==(UIVector2 left, UIVector2 right)
             {
                 return left.x == right.x && left.y == right.y;
             }
-            public static bool operator !=(IVector2 left, IVector2 right)
+            public static bool operator !=(UIVector2 left, UIVector2 right)
             {
                 return left.x != right.x || left.y != right.y;
             }
