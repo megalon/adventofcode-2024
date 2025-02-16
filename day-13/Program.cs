@@ -12,7 +12,7 @@ namespace aoc_2024_day_13
             string filepath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data.txt");
             string data = File.ReadAllText(filepath);
 
-            uint totalCostPart1 = 0;
+            ulong totalCostPart1 = 0;
 
             foreach (Match match in Regex.Matches(data, @"(Button A: X\+\d+, Y\+\d+)\s+(Button B: X\+\d+, Y\+\d+)\s+(Prize: X=\d+, Y=\d+)"))
             {
@@ -30,15 +30,15 @@ namespace aoc_2024_day_13
             Console.WriteLine("Total cost part 1: " + totalCostPart1);
         }
 
-        private static uint GetTokenCost(UIVector2 A, UIVector2 B, UIVector2 T, uint maxPresses)
+        private static ulong GetTokenCost(UIVector2 A, UIVector2 B, UIVector2 T, ulong maxPresses)
         {
             UIVector2 result = new UIVector2(0, 0);
             
             // We want as few A presses as possible, so start at 0
             // We want as many B presses as possible, so start at max 
-            for (uint countA = 0; countA < maxPresses; ++countA)
+            for (ulong countA = 0; countA < maxPresses; ++countA)
             {
-                for (uint countB = maxPresses; countB > 0; --countB)
+                for (ulong countB = maxPresses; countB > 0; --countB)
                 {
                     result = new UIVector2(
                         A.x * countA + B.x * countB,
@@ -62,15 +62,15 @@ namespace aoc_2024_day_13
         {
             Match match = Regex.Match(input, @"\D+(\d+)\D+(\d+)");
 
-            return new UIVector2(uint.Parse(match.Groups[1].Value), uint.Parse(match.Groups[2].Value));
+            return new UIVector2(ulong.Parse(match.Groups[1].Value), ulong.Parse(match.Groups[2].Value));
         }
 
         private struct UIVector2
         {
-            public uint x { get; }
-            public uint y { get; }
+            public ulong x { get; }
+            public ulong y { get; }
 
-            public UIVector2(uint x, uint y)
+            public UIVector2(ulong x, ulong y)
             {
                 this.x = x;
                 this.y = y;
