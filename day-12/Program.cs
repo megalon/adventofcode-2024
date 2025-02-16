@@ -46,13 +46,15 @@
                     Console.WriteLine($"Num sides for {plantType}: {numSides}");
 
                     totalPricePart1 += ((uint)plot.Count * perimeter);
+                    totalPricePart2 += ((uint)plot.Count * numSides);
 
                     //PrintMap(map);
                     Console.WriteLine();
                 }
             }
 
-            Console.WriteLine($"Total price of fence: {totalPricePart1}");
+            Console.WriteLine($"Part 1 total price: {totalPricePart1}");
+            Console.WriteLine($"Part 2 total price: {totalPricePart2}");
         }
 
         private static void FindPlot(char[,] map, int x, int y, char plantType, List<IVector2> plot, Direction movementDir)
@@ -130,21 +132,6 @@
             }
 
             return numSides;
-        }
-
-        private static char GetCursorChar(Direction dir)
-        {
-            switch (dir)
-            {
-                case Direction.RIGHT:
-                    return '>';
-                case Direction.DOWN:
-                    return 'v';
-                case Direction.LEFT:
-                    return '<';
-                default:
-                    return '^';
-            }
         }
 
         private static WallSearchStatus WallCheckRecusive(char[,] map, List<IVector2> plot, IVector2 tile, Direction dir, Dictionary<IVector2, byte> sidesMap)
@@ -277,6 +264,21 @@
             public override int GetHashCode()
             {
                 return 0;
+            }
+        }
+
+        private static char GetCursorChar(Direction dir)
+        {
+            switch (dir)
+            {
+                case Direction.RIGHT:
+                    return '>';
+                case Direction.DOWN:
+                    return 'v';
+                case Direction.LEFT:
+                    return '<';
+                default:
+                    return '^';
             }
         }
 
