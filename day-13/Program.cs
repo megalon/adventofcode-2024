@@ -5,8 +5,13 @@
         static void Main(string[] args)
         {
             // read in data
+            string filepath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data.txt");
+            string data = File.ReadAllText(filepath);
+
+            Console.WriteLine(data);
 
             // parse into some kind of collection
+
 
             // iterate over claw machines
             {
