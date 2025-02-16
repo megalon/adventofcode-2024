@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Numerics;
+using System.Text.RegularExpressions;
 
 namespace aoc_2024_day_13
 {
@@ -16,10 +17,39 @@ namespace aoc_2024_day_13
                 IVector2 B = VectorFromInputString(match.Groups[2].Value);
                 IVector2 T = VectorFromInputString(match.Groups[3].Value);
 
+                // Loop maximums
+                // This is the max number of times we can add this
+                // number to get a number smaller than the target t
+                // It also has to be less than 100 by the puzzle rules
+                int maxA = (int)Math.Min(Math.Floor(T.x / (decimal)A.x), Math.Floor(T.y / (decimal)A.y));
+                int maxB = (int)Math.Min(Math.Floor(T.x / (decimal)B.x), Math.Floor(T.y / (decimal)B.y));
+
+                int maxCount = Math.Min(100, Math.Min(maxA, maxB));
+
+                IVector2 divisorA = new IVector2(0, 0);
+                IVector2 divisorB = new IVector2(0, 0);
+                int countInv = 0;
+
                 // iterate, adding each time
                 // max 100 iterations
+                for (int count = maxCount; count > 0; --count)
                 {
-                    // do some fancy math to find the divisors
+                    divisorB = new IVector2(B.x * count, B.y * count);
+
+                    // if not divisible ignore
+                    if (T.x % divisorB.x != 0)
+                        continue;
+
+                    countInv = maxCount - count;
+
+                    divisorA = new IVector2(A.x * countInv, A.y * countInv);
+
+                    if (T.x % divisorA.x != 0)
+                        continue;
+
+                    // I guess that's it we found a match for x?
+                    Console.WriteLine("Match? Target: " + T.ToString());
+                    Console.WriteLine($"{T.x} * {count} + {T.y} * {countInv} = {(T.x * count) + (T.y * countInv)}");
                 }
 
                 // If not possible to reach target, ignore
@@ -46,6 +76,10 @@ namespace aoc_2024_day_13
             {
                 this.x = x;
                 this.y = y;
+            }
+            public override string ToString()
+            {
+                return "" + x + ", " + y;
             }
         }
     }
