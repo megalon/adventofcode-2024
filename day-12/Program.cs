@@ -1,6 +1,4 @@
-﻿using System.Reflection.Metadata;
-
-namespace aoc_2024_day_12
+﻿namespace aoc_2024_day_12
 {
     internal class Program
     {
@@ -21,7 +19,8 @@ namespace aoc_2024_day_12
                 }
             }
 
-            uint totalPrice = 0;
+            uint totalPricePart1 = 0;
+            uint totalPricePart2 = 0;
 
             // iterate through matrix
             for (int y = 0; y < map.GetLength(1); ++y)
@@ -40,18 +39,20 @@ namespace aoc_2024_day_12
                     FindPlot(map, x, y, plantType, plot, dir);
 
                     uint perimeter = FindPerimeter(plot);
+                    uint numSides = FindNumSides(map, plot);
 
                     Console.WriteLine($"Area for {plantType}: {plot.Count}");
                     Console.WriteLine($"Perimeter for {plantType}: {perimeter}");
+                    Console.WriteLine($"Num sides for {plantType}: {numSides}");
 
-                    totalPrice += ((uint)plot.Count * perimeter);
+                    totalPricePart1 += ((uint)plot.Count * perimeter);
 
                     //PrintMap(map);
                     Console.WriteLine();
                 }
             }
 
-            Console.WriteLine($"Total price of fence: {totalPrice}");
+            Console.WriteLine($"Total price of fence: {totalPricePart1}");
         }
 
         private static void FindPlot(char[,] map, int x, int y, char plantType, List<IVector2> plot, Direction movementDir)
@@ -108,6 +109,114 @@ namespace aoc_2024_day_12
             return perimeter;
         }
 
+        private static uint FindNumSides(char[,] map, List<IVector2> plot)
+        {
+            uint numSides = 0;
+
+            // This stores a bitfield for all 4 possible directions that a wall could be on
+            // This is to prevent the same wall from being counted twice
+            Dictionary<IVector2, byte> sidesMap = new Dictionary<IVector2, byte>();
+
+            foreach (IVector2 tile in plot)
+            {
+                // Check all 4 directions
+                foreach (Direction dir in Enum.GetValues(typeof(Direction)))
+                {
+                    WallSearchStatus status = WallCheckRecusive(map, plot, tile, dir, sidesMap);
+
+                    if (status == WallSearchStatus.OK)
+                        ++numSides;
+                }
+            }
+
+            return numSides;
+        }
+
+        private static char GetCursorChar(Direction dir)
+        {
+            switch (dir)
+            {
+                case Direction.RIGHT:
+                    return '>';
+                case Direction.DOWN:
+                    return 'v';
+                case Direction.LEFT:
+                    return '<';
+                default:
+                    return '^';
+            }
+        }
+
+        private static WallSearchStatus WallCheckRecusive(char[,] map, List<IVector2> plot, IVector2 tile, Direction dir, Dictionary<IVector2, byte> sidesMap)
+        {
+            //Console.Clear();
+            //PrintMap(map, tile, GetCursorChar(dir));
+            //Console.WriteLine();
+
+            // If this tile is not in the plot, return
+            if (!plot.Where(v => v == tile).Any())
+                return WallSearchStatus.NONE;
+
+            IVector2 delta = DirectionToIVector2(dir);
+            IVector2 wall = new IVector2(tile.x + delta.x, tile.y + delta.y);
+
+            // If this "wall" is not a wall, but actually part of the plot
+            if (plot.Where(v => v == wall).Any())
+                return WallSearchStatus.NONE;
+
+            // If we have already accounted for this wall
+            if (sidesMap.TryGetValue(wall, out byte bitfield))
+            {
+                if ((bitfield & (byte)dir) != 0)
+                    return WallSearchStatus.ALREADY_COUNTED;
+            }
+
+            // We found a fresh section of wall!
+
+            // Init entry in sidesmap, if needed
+            if (!sidesMap.ContainsKey(wall)) {
+                sidesMap.Add(wall, 0);
+            }
+
+            // Update sidesmap to indicate we have visited this tile from this direction
+            sidesMap[wall] |= (byte)dir;
+
+            switch (dir)
+            {
+                case Direction.UP: // Wall is UP, move RIGHT to look for more wall
+                    delta = DirectionToIVector2(Direction.RIGHT);
+                    break;
+                case Direction.RIGHT:
+                    delta = DirectionToIVector2(Direction.DOWN);
+                    break;
+                case Direction.DOWN:
+                    delta = DirectionToIVector2(Direction.LEFT);
+                    break;
+                case Direction.LEFT:
+                    delta = DirectionToIVector2(Direction.UP);
+                    break;
+            }
+
+            // Go to the next tile over where the wall would continue along
+            // and check if there is wall there
+
+            tile = new IVector2(tile.x + delta.x, tile.y + delta.y);
+
+            WallSearchStatus wallStatus = WallCheckRecusive(map, plot, tile, dir, sidesMap);
+
+            if (wallStatus == WallSearchStatus.ALREADY_COUNTED)
+                return WallSearchStatus.ALREADY_COUNTED;
+
+            return WallSearchStatus.OK;
+        }
+
+        private enum WallSearchStatus
+        {
+            NONE,
+            OK,
+            ALREADY_COUNTED
+        }
+
         private static IVector2 DirectionToIVector2(Direction dir)
         {
             switch (dir)
@@ -123,15 +232,16 @@ namespace aoc_2024_day_12
             return IVector2.UP;
         }
 
+        [Flags]
         private enum Direction
         {
-            UP,
-            RIGHT,
-            DOWN,
-            LEFT
+            UP = 1,
+            RIGHT = 2,
+            DOWN = 4,
+            LEFT = 8
         }
 
-        private struct IVector2
+        private struct IVector2 : IEquatable<IVector2>
         {
             public int x { get; }
             public int y { get; }
@@ -155,15 +265,31 @@ namespace aoc_2024_day_12
             {
                 return a.x != b.x || a.y != b.y;
             }
+
+            // Need to implement this for Dictionary.ContainsKey to work
+            public bool Equals(IVector2 other)
+            {
+                return x == other.x && y == other.y;
+            }
+
+            // Apparently when checking for equality it first checks hash code,
+            // This might not be equivalent, so just set it to zero
+            public override int GetHashCode()
+            {
+                return 0;
+            }
         }
 
-        private static void PrintMap(char[,] map)
+        private static void PrintMap(char[,] map, IVector2? cursor, char c = '*')
         {
             for (int y = 0; y < map.GetLength(1); ++y)
             {
                 for (int x = 0; x < map.GetLength(0); ++x)
                 {
-                    Console.Write(map[x, y]);
+                    if (cursor.HasValue && cursor.Value.x == x && cursor.Value.y == y)
+                        Console.Write(c);
+                    else
+                        Console.Write(map[x, y]);
                 }
                 Console.WriteLine();
             }
