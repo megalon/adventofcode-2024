@@ -83,3 +83,14 @@ for (int count = maxCount; count >= 0; --count) {
 
 	// I guess that's it we found a match for x?
 }
+
+
+Use math
+
+2 equations, 2 unknowns
+p_x = A * a_x + B * b_x
+p_y = A * a_y + B * b_y
+
+"Cramer's Rule"
+A = (p_x*b_y - p_y*b_x) / (a_x*b_y - a_y*b_x)
+B = (a_x*p_y - a_y*p_x) / (a_x*b_y - a_y*b_x)
