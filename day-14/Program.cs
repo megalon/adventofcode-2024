@@ -9,8 +9,8 @@ namespace aoc_2024_day_14
             string filepath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data.txt");
             string text = File.ReadAllText(filepath);
 
-            IVector2 mapSize = new IVector2(11, 7); // Test map
-            //IVector2 mapSize = new IVector2(101, 103);
+            //IVector2 mapSize = new IVector2(11, 7); // Test map
+            IVector2 mapSize = new IVector2(101, 103);
             int numSeconds = 100;
 
             int[,] map = new int[mapSize.x, mapSize.y];
@@ -48,6 +48,9 @@ namespace aoc_2024_day_14
             Console.WriteLine($"Part 1: {GetSafetyFactor(map)}");
         }
 
+        // Count the number of robots in each quadrant of the map
+        // ignore the exact middle row / column if the map is not evenly divisible
+        // multiply the count in each quadrant together to get the final safety factor
         private static uint GetSafetyFactor(int[,] map)
         {
             uint safetyFactor = 1;
