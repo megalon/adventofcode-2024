@@ -9,11 +9,12 @@ namespace aoc_2024_day_14
             string filepath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data.txt");
             string text = File.ReadAllText(filepath);
 
-            //IVector2 mapSize = new IVector2(11, 7); // Test map
-            IVector2 mapSize = new IVector2(101, 103);
-            int numSeconds = 100;
+            IVector2 mapSize = new IVector2(11, 7); // Test map
+            //IVector2 mapSize = new IVector2(101, 103);
 
             int[,] map = new int[mapSize.x, mapSize.y];
+
+            List<Robot> robots = new List<Robot>();
 
             foreach (Match match in Regex.Matches(text, @"p=(-?\d+),(-?\d+) v=(-?\d+),(-?\d+)"))
             {
@@ -22,30 +23,32 @@ namespace aoc_2024_day_14
 
                 Console.WriteLine($"p:{position.ToString()} v:{velocity.ToString()}");
 
-                // Process movement
-                for (int i = 0; i < numSeconds; ++i)
-                {
-                    // Move along velocity
-                    position.x += velocity.x;
-                    position.y += velocity.y;
-
-                    // Wrap around edges
-                    if (position.x >= mapSize.x)
-                        position.x %= mapSize.x;
-                    if (position.y >= mapSize.y)
-                        position.y %= mapSize.y;
-
-                    // If the value is negative, we need to move it back onto the map
-                    if (position.x < 0)
-                        position.x = (position.x % mapSize.x) + mapSize.x;
-                    if (position.y < 0)
-                        position.y = (position.y % mapSize.y) + mapSize.y;
-                }
-                map[position.x, position.y] += 1;
+                robots.Add(new Robot(position, velocity));
             }
+
+            Console.WriteLine($"Part 1: {Part1(map, robots, 100)}");
+        }
+
+        private static uint Part1(int[,] map, List<Robot> robots, int numSeconds)
+        {
+            IVector2 mapSize = new IVector2(map.GetLength(0), map.GetLength(1));
+
+            for (int i = 0; i < numSeconds; ++i)
+            {
+                foreach (Robot robot in robots)
+                {
+                    robot.Move(mapSize);
+                }
+            }
+
+            foreach (Robot robot in robots)
+            {
+                map[robot.position.x, robot.position.y] += 1;
+            }
+            
             PrintMap(map);
 
-            Console.WriteLine($"Part 1: {GetSafetyFactor(map)}");
+            return GetSafetyFactor(map);
         }
 
         // Count the number of robots in each quadrant of the map
@@ -92,6 +95,38 @@ namespace aoc_2024_day_14
             }
 
             return safetyFactor;
+        }
+
+        private class Robot
+        {
+            public IVector2 position { get; set;}
+            public IVector2 velocity { get; set;}
+            public IVector2 startPos { get; set;}
+            public Robot(IVector2 position, IVector2 velocity)
+            {
+                this.position = position;
+                this.velocity = velocity;
+                startPos = position;
+            }
+
+            public void Move(IVector2 bounds)
+            {
+                // Move along velocity
+                position.x += velocity.x;
+                position.y += velocity.y;
+
+                // Wrap around edges
+                if (position.x >= bounds.x)
+                    position.x %= bounds.x;
+                if (position.y >= bounds.y)
+                    position.y %= bounds.y;
+
+                // If the value is negative, we need to move it back onto the map
+                if (position.x < 0)
+                    position.x = (position.x % bounds.x) + bounds.x;
+                if (position.y < 0)
+                    position.y = (position.y % bounds.y) + bounds.y;
+            }
         }
 
         private static void PrintMap(int[,] map)

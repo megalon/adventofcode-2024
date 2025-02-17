@@ -20,3 +20,9 @@ This seems like a factorial or something.
 
 I think if we just run the thing and every robot ends up in it's start position,
 then it will have displayed the easter egg
+
+Implementation:
+- Keep track of each robot in a list
+- Track robot start position
+- Every second, check if all the robots are in their start position
+- Could probably cache the position of the robot given N seconds to speed things up
