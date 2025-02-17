@@ -1,0 +1,22 @@
+Part 2
+
+From the puzzle:
+Very rarely, most of the robots should arrange themselves into a picture of a Christmas tree.
+
+What is the fewest number of seconds that must elapse for the robots to display the Easter egg?
+
+Interpretation:
+I think this is asking how long would it take for each robot to reach an arbitrary position?
+We aren't given a specific "tree" to draw, so maybe it doesn't matter.
+Is this just calculating the probability that every robot will be in ANY exact position?
+
+Ah, they WILL eventually be arranged in the right way to display the easter egg.
+
+Each robot is moving in a loop, and will eventually end up in the start position.
+Every robot loops eventually.
+If the robots have all completed one cycle, they will have displayed the image?
+
+This seems like a factorial or something.
+
+I think if we just run the thing and every robot ends up in it's start position,
+then it will have displayed the easter egg
