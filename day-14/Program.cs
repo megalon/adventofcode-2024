@@ -26,7 +26,7 @@ namespace aoc_2024_day_14
                 robots.Add(new Robot(position, velocity));
             }
 
-            Console.WriteLine($"Part 1: {Part1(map, robots, 100)}");
+            //Console.WriteLine($"Part 1: {Part1(map, robots, 100)}");
 
             Part1(map, robots, mapSize.x * mapSize.y);
         }
@@ -49,7 +49,7 @@ namespace aoc_2024_day_14
                 }
 
 
-                bool found = false;
+                int clusterCount = 0;
 
                 // look for clusters of robots
                 foreach (Robot robot in robots)
@@ -80,13 +80,13 @@ namespace aoc_2024_day_14
                     // If the whole area is full of robots
                     if (count == boxSize * boxSize)
                     {
-                        found = true;
+                        ++clusterCount;
                     }
                 }
 
-                if (found)
+                if (clusterCount > 4)
                 {
-                    Console.WriteLine($"Found tree after robots ran for: {numSeconds + 1} sec");
+                    Console.WriteLine($"Found tree after robots ran for: {i} sec");
                     PrintMap(map);
                 }
 
@@ -160,12 +160,11 @@ namespace aoc_2024_day_14
         {
             public IVector2 position { get; set;}
             public IVector2 velocity { get; set;}
-            public IVector2 startPos { get; set;}
+
             public Robot(IVector2 position, IVector2 velocity)
             {
                 this.position = position;
                 this.velocity = velocity;
-                startPos = position;
             }
 
             public void Move(IVector2 bounds)
