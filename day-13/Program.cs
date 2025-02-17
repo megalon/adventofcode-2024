@@ -19,12 +19,12 @@ namespace aoc_2024_day_13
                 BigVector2 B = VectorFromInputString(match.Groups[2].Value);
                 BigVector2 T = VectorFromInputString(match.Groups[3].Value);
 
-                Console.WriteLine(T.ToString());
+                //Console.WriteLine(T.ToString());
 
-                //totalCostPart1 += GetTokenCostPart1(A, B, T, 100);
+                totalCostPart1 += GetTokenCostPart1(A, B, T, 100);
                 totalCostPart2 += GetTokenCostPart2(A, B, new BigVector2(T.x + 10000000000000, T.y + 10000000000000));
 
-                Console.WriteLine();
+                //Console.WriteLine();
             }
 
             Console.WriteLine("Total cost part 1: " + totalCostPart1);
@@ -69,8 +69,8 @@ namespace aoc_2024_day_13
 
                     if (T == result)
                     {
-                        Console.WriteLine("****** MATCH ******");
-                        Console.Write($"{A.ToString()} * {countA} + {B.ToString()} * {countB} = {result.ToString()}");
+                        //Console.WriteLine("****** MATCH ******");
+                        //Console.Write($"{A.ToString()} * {countA} + {B.ToString()} * {countB} = {result.ToString()}");
 
                         return countA * 3 + countB;
                     }
