@@ -42,17 +42,25 @@ namespace aoc_2024_day_15
                 Console.WriteLine();
             }
 
-            // iterate through grid
+            uint gpsTotal = 0;
+
+            // Get GPS total
+            for (int y = 0; y < matches.Count; ++y)
             {
-                // if this is not a box, ignore
+                for (int x = 0; x < matches[0].Length; ++x)
+                {
+                    // if this is not a box, ignore
+                    if (map[x, y] != 'O')
+                        continue;
 
-                // get the GPS coord
-                // x + (y * 100)
-
-                // add this to the total of all gps box positions
+                    // get the GPS coord
+                    // x + (y * 100)
+                    // add this to the total of all gps box positions
+                    gpsTotal += (uint)(x + (y * 100));
+                }
             }
 
-            // print total
+            Console.WriteLine(gpsTotal);
         }
 
         private static void MoveInDirection(char[,] map, ref IVector2 robotPosition, char direction)
@@ -80,7 +88,7 @@ namespace aoc_2024_day_15
                 robotPosition.y += delta.y;
             }
 
-            PrintMap(map);
+            //PrintMap(map);
         }
 
         private static bool MoveRobotAndBoxesRecursive(char[,] map, IVector2 position, IVector2 delta)
