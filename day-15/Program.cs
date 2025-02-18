@@ -12,7 +12,7 @@ namespace aoc_2024_day_15
             string text = File.ReadAllText(filepath);
 
             MatchCollection matches = Regex.Matches(text, @"#+\S+#\s");
-            IVector2 robot = new IVector2(0, 0);
+            IVector2 robotPosition = new IVector2(0, 0);
 
             // use char array so we can modify it when things move
             char[,] map = new char[matches[0].Length, matches.Count];
@@ -25,8 +25,8 @@ namespace aoc_2024_day_15
 
                     if (map[x, y] == '@')
                     {
-                        robot.x = x;
-                        robot.y = y;
+                        robotPosition.x = x;
+                        robotPosition.y = y;
                     }
                 }
             }
@@ -37,14 +37,9 @@ namespace aoc_2024_day_15
             // iterate through commands 
             foreach (var command in commandsInput)
             {
-                // from robot position,
-                // check tile in direction of movemet
-                // if it's a wall
-                //   continue
-                // if it's a box
-                //   check area in direction of movment + 1
-                // if it's empty space
-                //   move to that space, set the previous space to empty
+                Console.WriteLine(command);
+                MoveInDirection(map, ref robotPosition, command);
+                Console.WriteLine();
             }
 
             // iterate through grid
@@ -59,6 +54,67 @@ namespace aoc_2024_day_15
 
             // print total
         }
+
+        private static void MoveInDirection(char[,] map, ref IVector2 robotPosition, char direction)
+        {
+            IVector2 delta = new IVector2(0, 0);
+            switch (direction)
+            {
+                case 'v': 
+                    delta = new IVector2(0, 1);
+                    break;
+                case '<':
+                    delta = new IVector2(-1, 0);
+                    break;
+                case '>':
+                    delta = new IVector2(1, 0);
+                    break;
+                default:
+                    delta = new IVector2(0, -1);
+                    break;
+            }
+
+            if (MoveRobotAndBoxesRecursive(map, robotPosition, delta))
+            {
+                robotPosition.x += delta.x;
+                robotPosition.y += delta.y;
+            }
+
+            PrintMap(map);
+        }
+
+        private static bool MoveRobotAndBoxesRecursive(char[,] map, IVector2 position, IVector2 delta)
+        {
+            bool canMove = false;
+
+            // if next is a box
+            if (map[position.x + delta.x, position.y + delta.y] == 'O')
+                canMove = MoveRobotAndBoxesRecursive(map, position + delta, delta);
+
+            // if next is empty space
+            if (map[position.x + delta.x, position.y + delta.y] == '.')
+                canMove = true;
+
+            if (canMove)
+            {
+                map[position.x + delta.x, position.y + delta.y] = map[position.x, position.y];
+                map[position.x, position.y] = '.';
+            }
+
+            return canMove;
+        }
+
+        private static void PrintMap(char[,] map)
+        {
+            for (int y = 0; y < map.GetLength(1); ++y)
+            {
+                for (int x = 0; x < map.GetLength(0); ++x)
+                {
+                    Console.Write(map[x, y]);
+                }
+                Console.WriteLine();
+            }
+        }
     }
 
     internal struct IVector2
@@ -69,6 +125,10 @@ namespace aoc_2024_day_15
         {
             this.x = x;
             this.y = y;
+        }
+        public static IVector2 operator +(IVector2 a, IVector2 b)
+        {
+            return new IVector2(a.x + b.x, a.y + b.y);
         }
     }
 }
